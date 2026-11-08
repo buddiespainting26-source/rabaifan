@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4eee3"><link rel="manifest" href="manifest.webmanifest">
+<title>Atelier — Painting Workshop Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4eee3;--paper:#fffdf8;--paper2:#eee4d5;--ink:#38291f;--muted:#8c7867;--line:#e7dccb;--brown:#76583f;--green:#71836b;--red:#b47764;--shadow:0 10px 30px rgba(65,45,29,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px "IBM Plex Sans Thai",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:1500px;min-height:100vh;margin:auto;display:grid;grid-template-columns:245px 1fr}.sidebar{background:#f0e8dc;border-right:1px solid var(--line);padding:26px 17px;display:flex;flex-direction:column;gap:28px}.brand{display:flex;align-items:center;gap:11px;padding:0 9px}.logo{width:40px;height:40px;border-radius:14px;background:var(--ink);color:#f8f0e4;display:grid;place-items:center;font:800 19px Manrope}.brand b{font:800 15px Manrope}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.nav-title{font-size:10px;color:#a28e7a;font-weight:700;letter-spacing:1.3px;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:5px}.nav button{border:0;background:none;text-align:left;color:#806b59;padding:12px;border-radius:12px;display:flex;align-items:center;gap:12px;font-weight:550}.nav button.active{background:#e2d5c3;color:var(--ink);font-weight:700}.nav .ico{font-size:17px;width:20px;text-align:center}.side-note{margin-top:auto;padding:15px;background:#e7dccb;border-radius:15px;color:#806b59;font-size:11px;line-height:1.7}.side-note b{display:block;color:var(--ink);font-size:13px}
+main{padding:29px 38px 55px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:23px}.eyebrow{font-size:10px;color:var(--muted);letter-spacing:1.4px;font-weight:700}.heading{font-size:26px;font-weight:650;letter-spacing:-.5px;margin:3px 0}.top-actions{display:flex;align-items:center;gap:10px}.theme-toggle{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:9px;padding:6px 9px;font-size:11px;line-height:1;min-width:48px;height:30px}.theme-toggle:hover{background:var(--paper2)}.date-pill{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 13px;color:var(--muted);font-size:11px}.date-pill b{color:var(--ink)}
+.page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:13px;margin-bottom:16px}.card{background:var(--paper);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.balance{background:var(--ink);color:#fff7eb;padding:19px 21px}.label{font-size:11px;color:var(--muted);font-weight:550}.balance .label{color:#c6b39e}.value{font:800 25px Manrope;letter-spacing:-.7px;margin:8px 0 4px}.balance .value{font-size:27px}.hint{font-size:10px;color:var(--muted)}.balance .hint{color:#c6b39e}.metric{padding:17px}.metric .value{font-size:20px;margin:12px 0 3px}.metric-icon{float:right;background:#f0e8dc;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:var(--brown)}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,.8fr);gap:15px}.chart-card,.panel{padding:19px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.section-head h2{font-size:16px;margin:0;font-weight:650}.section-head p{font-size:10px;color:var(--muted);margin:3px 0 0}.period-tools{display:flex;gap:6px;align-items:center}.seg{display:flex;background:#f0e8dc;padding:3px;border-radius:10px}.seg button{border:0;background:none;padding:6px 9px;border-radius:8px;font-size:10px;color:#806b59}.seg button.active{background:var(--paper);color:var(--ink);font-weight:700;box-shadow:0 2px 5px #38291f12}.month-switch{display:flex;align-items:center;gap:8px;background:#f3ece2;padding:4px;border-radius:10px}.month-switch button{border:0;background:var(--paper);color:var(--ink);width:27px;height:27px;border-radius:8px;font-size:17px}.month-switch span{min-width:104px;text-align:center;font-size:11px;font-weight:650}.legend{display:flex;gap:15px;margin:18px 0 9px;font-size:10px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.chart{height:210px;display:flex;align-items:stretch;gap:6px;padding:8px 3px 0;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to bottom,transparent 0,transparent 50px,#eee7dc 51px,#eee7dc 52px);overflow:hidden}.col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}.bars{height:178px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:3px}.bar{width:min(15px,40%);min-height:2px;border-radius:5px 5px 1px 1px}.bar.in{background:#a88a6c}.bar.out{background:#d7bba5}.col small{font-size:9px;color:#998573;padding-bottom:7px}.chart-summary{display:flex;gap:18px;margin-top:11px;font-size:10px;color:var(--muted)}.chart-summary b{color:var(--ink);font:700 11px Manrope}.right-stack{display:grid;gap:14px;align-content:start}.profit{padding:18px}.profit .value{font-size:24px}.activity{padding:18px}.activity-row{display:flex;align-items:center;gap:9px;margin-top:14px}.activity-icon{width:32px;height:32px;border-radius:10px;background:#f0e8dc;display:grid;place-items:center}.activity-row div:nth-child(2){flex:1}.activity-row b{display:block;font-size:11px}.activity-row small{color:var(--muted);font-size:9px}.activity-row strong{font:700 11px Manrope}.green{color:var(--green)}.red{color:var(--red)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:15px 0}.filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.filters input,.filters select,.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:9px 11px;outline:none}.btn{border:0;background:var(--ink);color:#fff7eb;border-radius:11px;padding:10px 15px;font-weight:600;font-size:12px}.btn.secondary{background:#e8ddcd;color:var(--ink)}.table-wrap{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:600px}.data-table th{text-align:left;color:var(--muted);font-size:10px;font-weight:600;padding:12px;border-bottom:1px solid var(--line)}.data-table td{padding:13px 12px;border-bottom:1px solid #eee7dc;font-size:11px}.data-table tr:last-child td{border:0}.tag{padding:4px 8px;border-radius:20px;background:#eee4d5;color:#775e48;font-size:9px}.empty{text-align:center;color:var(--muted);padding:35px!important}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}#saleLines select,#saleLines input{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px;width:100%;min-width:0}#saleLines .field{min-width:0}.field{display:grid;gap:5px}.field label{font-size:10px;color:var(--muted)}.field input,.field select{width:100%}.modal{position:fixed;inset:0;background:#241a14a8;display:none;align-items:center;justify-content:center;padding:15px;z-index:20}.modal.show{display:flex}.modal-box{background:var(--paper);border-radius:18px;padding:22px;width:min(480px,100%);max-height:90vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h3{margin:0}.close{border:0;background:#eee4d5;border-radius:9px;width:30px;height:30px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.product-photo{width:100%;height:116px;object-fit:cover;border-radius:12px;background:#eee4d5;display:block}
+.sale-product-preview{display:flex;align-items:center;gap:10px;margin-top:7px;padding:7px;background:#f6f0e7;border-radius:10px}
+.sale-product-preview img{width:54px;height:54px;object-fit:cover;border-radius:9px;background:#e8ddcd}
+.sale-product-preview .no-photo{width:54px;height:54px;border-radius:9px;background:#e8ddcd;display:grid;place-items:center;color:#8c7867;font-size:20px}
+#formFields input[type=file]{font-size:11px;padding:7px}
+@media(max-width:520px){.stock-grid{grid-template-columns:1fr 1fr}.product-photo{height:95px}}.stock-card{padding:15px}.stock-card b{display:block;margin:7px 0}.mobile-nav{display:none}
+@media(max-width:920px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:23px 20px 95px}.cards{grid-template-columns:repeat(2,1fr)}.balance{grid-column:span 2}.grid{grid-template-columns:1fr}.mobile-nav{display:flex;position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fffdf8f2;backdrop-filter:blur(12px);border-top:1px solid var(--line);justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom))}.mobile-nav button{border:0;background:none;color:#8b7765;font-size:9px;display:grid;gap:3px;justify-items:center}.mobile-nav button.active{color:var(--ink);font-weight:700}.mobile-nav span{font-size:17px}}
+@media(max-width:520px){main{padding:19px 13px 90px}.heading{font-size:22px}.date-pill{font-size:9px;padding:8px}.cards{gap:8px}.metric{padding:13px}.metric .value{font-size:17px}.balance{padding:16px}.balance .value{font-size:23px}.chart-card,.panel{padding:14px}.section-head{align-items:flex-start;flex-wrap:wrap}.chart{gap:2px;height:185px}.bars{height:153px}.col small{font-size:8px}.form-grid{grid-template-columns:1fr}.stock-grid{grid-template-columns:1fr 1fr}}
+body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b6a28e;--line:#493a2e;--shadow:0 10px 30px #0002;background:var(--bg);color:var(--ink)}body.dark .sidebar{background:#261f1a}body.dark .nav button{color:#c0aa95}body.dark .nav button.active{background:#493a2e;color:#fff4e6}body.dark .side-note{background:#3b3027;color:#c9b49f}body.dark .side-note b{color:var(--ink)}body.dark .metric-icon,body.dark .activity-icon,body.dark .seg,body.dark .month-switch,body.dark .month-switch button,body.dark .btn.secondary{background:#493a2e;color:var(--ink)}body.dark .chart{background:repeating-linear-gradient(to bottom,transparent 0,transparent 50px,#40352c 51px,#40352c 52px)}body.dark .bar.in{background:#c5a486}body.dark .bar.out{background:#765b49}body.dark .mobile-nav{background:#2d241ef2;border-color:var(--line)}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><div class="logo">A.</div><div><b>Atelier Manager</b><small>Painting Workshop</small></div></div>
+ <div><div class="nav-title">WORKSPACE</div><nav class="nav">
+  <button class="active" data-page="overview"><span class="ico">▦</span>ภาพรวม</button>
+  <button data-page="income"><span class="ico">↗</span>รายรับ / การขาย</button>
+  <button data-page="expense"><span class="ico">↙</span>รายจ่าย</button>
+  <button data-page="stock"><span class="ico">▤</span>สต็อกสินค้า</button>
+  <button data-page="settings"><span class="ico">⚙</span>บันทึกและตั้งค่า</button>
+ </nav></div><div class="side-note"><b>Painting Workshop</b>จัดการยอดขายเวิร์กช็อปเพ้นติ้ง รายรับ รายจ่าย และวัสดุอุปกรณ์ในที่เดียว</div>
+</aside>
+<main>
+<header class="top"><div><div class="eyebrow">ATELIER · PAINTING WORKSHOP</div><h1 class="heading" id="pageTitle">ภาพรวมธุรกิจ</h1></div><div class="top-actions"><button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="สลับธีม" title="สลับธีมสว่าง / มืด">☼ / ☾</button><div class="date-pill">◷ <b id="today"></b> <span id="clock"></span></div></div></header>
+<section class="page active" id="overview">
+ <div class="cards">
+  <div class="card balance"><div class="label">เงินคงเหลือในบัญชี</div><div class="value" id="balance">฿0.00</div><div class="hint">รายรับ + เงินลงทุน − รายจ่าย และยอดปรับบัญชี</div><button class="btn secondary" style="margin-top:12px;padding:7px 11px" onclick="adjustAccountBalance()">ปรับยอดเงินให้ตรงกับบัญชี</button></div>
+  <div class="card metric"><span class="metric-icon">↗</span><div class="label">รายรับทั้งหมด</div><div class="value" id="ovIncome">฿0</div><div class="hint" id="ovIncomeLabel">รายรับวันนี้</div></div>
+  <div class="card metric"><span class="metric-icon">↙</span><div class="label">รายจ่ายทั้งหมด</div><div class="value" id="ovExpense">฿0</div><div class="hint" id="ovExpenseLabel">รายจ่ายวันนี้</div></div>
+  <div class="card metric"><span class="metric-icon">✳</span><div class="label">กำไรสุทธิ</div><div class="value" id="ovProfit">฿0</div><div class="hint" id="ovProfitLabel">กำไรวันนี้</div></div>
+ </div>
+ <div class="grid"><div class="card chart-card">
+  <div class="section-head"><div><h2>รายรับและรายจ่าย</h2><p>ดูผลประกอบการรายวัน รายเดือน หรือรายปี</p></div><div class="period-tools"><div class="seg"><button class="active" data-range="day">วัน</button><button data-range="month">เดือน</button><button data-range="year">ปี</button></div></div></div>
+  <div class="section-head" style="margin-top:12px"><div class="month-switch"><button id="prev">‹</button><span id="periodLabel"></span><button id="next">›</button></div><div class="filters"><input type="date" id="pickDate" aria-label="เลือกวันที่" style="max-width:145px"></div></div>
+  <div class="legend"><span><i class="dot" style="background:#a88a6c"></i>รายรับ</span><span><i class="dot" style="background:#d7bba5"></i>รายจ่าย</span></div><div class="chart" id="chart"></div>
+  <div class="chart-summary"><span>รายรับ <b id="chartIn">฿0</b></span><span>รายจ่าย <b id="chartOut">฿0</b></span><span>กำไร <b id="chartProfit">฿0</b></span></div>
+ </div><div class="right-stack"><div class="card activity panel"><div class="section-head"><div><h2>รายการที่ขายดีที่สุด</h2><p id="bestSellingCaption">5 อันดับตามจำนวนที่ขายในช่วงเวลาที่เลือก</p></div></div><div id="bestSelling"></div></div><div class="card activity panel"><div class="section-head"><div><h2>รายการที่กำไรดีที่สุด</h2><p id="bestProfitCaption">5 อันดับตามกำไรจากการขายในช่วงเวลาที่เลือก</p></div></div><div id="bestProfit"></div></div></div></div>
+</section>
+<section class="page" id="income"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายรับวันนี้</div><div class="value" id="incomeToday">฿0</div></div><div class="card metric"><div class="label">รายรับเดือนนี้</div><div class="value" id="incomeMonth">฿0</div></div><div class="card metric"><div class="label">รายรับปีนี้</div><div class="value" id="incomeYear">฿0</div></div></div>
+ <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการขาย / รายรับ / เงินลงทุน</h2><div class="hint">บันทึกยอดขายและเงินส่วนตัวที่นำมาลงทุนเพิ่มในธุรกิจ</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="openModal('capital')">＋ ลงทุนเพิ่ม</button><button class="btn" onclick="openModal('income')">＋ เพิ่มรายรับ</button></div></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="incomeDateFilter"><select id="incomeMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('income')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลา</th><th>สินค้าที่ขาย</th><th>จำนวนรวม</th><th>ยอดรายรับ</th><th></th></tr></thead><tbody id="incomeRows"></tbody></table></div></div>
+</section>
+<section class="page" id="expense"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายจ่ายวันนี้</div><div class="value" id="expenseToday">฿0</div></div><div class="card metric"><div class="label">รายจ่ายเดือนนี้</div><div class="value" id="expenseMonth">฿0</div></div><div class="card metric"><div class="label">รายจ่ายปีนี้</div><div class="value" id="expenseYear">฿0</div></div></div>
+ <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการรายจ่าย</h2><div class="hint">บันทึกค่าใช้จ่ายประจำวันของเวิร์กช็อป</div></div><button class="btn" onclick="openModal('expense')">＋ เพิ่มรายจ่าย</button></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="expenseDateFilter"><select id="expenseMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+</section>
+<section class="page" id="stock"><div class="toolbar"><div><h2 style="margin:0;font-size:17px">คลังสินค้าและวัสดุ</h2><div class="hint">ตัวอย่างรายการอุปกรณ์สำหรับเวิร์กช็อปเพ้นติ้ง</div></div><button class="btn" onclick="openModal('stock')">＋ เพิ่มสินค้า</button></div><div class="stock-grid" id="stockGrid"></div><div class="card panel" style="margin-top:15px"><h2 style="font-size:15px;margin:0 0 12px">ประวัติการเคลื่อนไหว</h2><div class="hint">รายการรับเข้าและเบิกใช้จะแสดงในส่วนนี้เมื่อมีการพัฒนาระบบสต็อกเต็มรูปแบบ</div></div></section>
+<section class="page" id="settings"><div class="card panel"><h2 style="font-size:16px;margin-top:0">บันทึกและตั้งค่า</h2><p class="hint">ข้อมูลตัวอย่างในเวอร์ชันทดลองนี้บันทึกไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p><div class="toolbar" style="justify-content:flex-start"><button class="btn" onclick="exportData()">ส่งออกข้อมูลสำรอง (JSON)</button><label class="btn secondary" for="importFile">นำเข้าข้อมูลสำรอง</label><input type="file" id="importFile" accept=".json,application/json" hidden></div><p class="hint">ขั้นตอนถัดไปจะเชื่อมฐานข้อมูลออนไลน์ เพื่อให้ iPhone, iPad และคอมพิวเตอร์เห็นข้อมูลชุดเดียวกัน</p></div></section>
+</main></div>
+<nav class="mobile-nav"><button class="active" data-page="overview"><span>▦</span>ภาพรวม</button><button data-page="income"><span>↗</span>รายรับ</button><button data-page="expense"><span>↙</span>รายจ่าย</button><button data-page="stock"><span>▤</span>สต็อก</button><button data-page="settings"><span>⚙</span>ตั้งค่า</button></nav>
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">เพิ่มรายการ</h3><button class="close" onclick="closeModal()">×</button></div><form id="entryForm"><div id="formFields" class="form-grid"></div><div class="modal-actions"><button type="button" class="btn secondary" onclick="closeModal()">ยกเลิก</button><button class="btn" type="submit">บันทึกรายการ</button></div></form></div></div>
+<script>
+const $=id=>document.getElementById(id), today=new Date(), pad=n=>String(n).padStart(2,'0'), iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()), fmt=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2}), thdate=s=>new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric'}).format(new Date(s+'T12:00:00'));
+let entries=JSON.parse(localStorage.getItem('atelier_entries')||'[]'),products=JSON.parse(localStorage.getItem('atelier_products')||'null')||[
+{name:'ถาดปูนปลาสเตอร์ วงกลม',qty:25,unit:'ชิ้น',salePrice:150,cost:55},
+{name:'ถาดปูนปลาสเตอร์ สี่เหลี่ยม',qty:18,unit:'ชิ้น',salePrice:180,cost:70},
+{name:'เฟรมผ้าใบ',qty:35,unit:'ชิ้น',salePrice:120,cost:45},
+{name:'สีอะคริลิก',qty:18,unit:'ชุด',salePrice:90,cost:35},
+{name:'พู่กัน',qty:42,unit:'ด้าม',salePrice:50,cost:18},
+{name:'จานสี',qty:20,unit:'ชิ้น',salePrice:45,cost:15}
+];
+products.forEach((p,i)=>{if(p.salePrice==null)p.salePrice=({'ถาดปูนปลาสเตอร์ วงกลม':150,'ถาดปูนปลาสเตอร์ สี่เหลี่ยม':180,'เฟรมผ้าใบ':120,'สีอะคริลิก':90,'พู่กัน':50,'จานสี':45}[p.name]||0);if(p.cost==null)p.cost=0;if(!p.id)p.id='p'+i+'_'+p.name;});
+products.forEach(p=>{if(p.description==null)p.description='';if(p.image==null)p.image='';if(p.unit==null)p.unit='ชิ้น'});
+let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categories')||'null')||['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด'];
+if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
+let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
+let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null;
+function save(){localStorage.setItem('atelier_entries',JSON.stringify(entries));localStorage.setItem('atelier_products',JSON.stringify(products));localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories));localStorage.setItem('atelier_balance_adjustment',String(accountBalanceAdjustment))}
+function sum(list,type){return list.filter(x=>!type||x.type===type).reduce((a,x)=>a+Number(x.amount),0)}
+function productPerformance(list){
+ const map=new Map();
+ list.filter(x=>x.type==='income').forEach(sale=>(sale.items||[]).forEach(it=>{
+  const key=it.productId||it.name||'unknown';
+  const product=products.find(p=>p.id===it.productId);
+  const qty=Number(it.qty)||0, revenue=Number(it.lineTotal!=null?it.lineTotal:(Number(it.price)||0)*qty);
+  const unitCost=it.unitCost!=null?Number(it.unitCost):(product?Number(product.cost)||0:0);
+  const cost=it.costTotal!=null?Number(it.costTotal):unitCost*qty;
+  const item=map.get(key)||{name:it.name||product?.name||'สินค้า',qty:0,revenue:0,cost:0,profit:0};
+  item.qty+=qty;item.revenue+=revenue;item.cost+=cost;item.profit+=revenue-cost;map.set(key,item);
+ }));
+ return [...map.values()];
+}
+function netProfit(list){return sum(list,'income')-sum(list,'expense')}
+function inPeriod(date,r,c){let d=new Date(date+'T12:00:00');if(r==='day')return iso(d)===iso(c);if(r==='month')return d.getFullYear()===c.getFullYear()&&d.getMonth()===c.getMonth();return d.getFullYear()===c.getFullYear()}
+function periodData(){return entries.filter(x=>inPeriod(x.date,range,cursor))}
+function nav(page){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('pageTitle').textContent=({overview:'ภาพรวมธุรกิจ',income:'รายรับ / การขาย',expense:'รายจ่าย',stock:'สต็อกสินค้า',settings:'บันทึกและตั้งค่า'})[page];$('themeToggle').style.display=page==='settings'?'none':'inline-flex';render()}
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>nav(b.dataset.page));
+function setRange(r){range=r;document.querySelectorAll('[data-range]').forEach(b=>b.classList.toggle('active',b.dataset.range===r));render()}
+document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>setRange(b.dataset.range));
+function move(n){if(range==='day')cursor.setDate(cursor.getDate()+n);else if(range==='month')cursor.setMonth(cursor.getMonth()+n);else cursor.setFullYear(cursor.getFullYear()+n);render()}
+$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('pickDate').value=iso(cursor);$('pickDate').onchange=e=>{if(e.target.value){cursor=new Date(e.target.value+'T12:00:00');render()}};
+function labelPeriod(){if(range==='day')return thdate(iso(cursor));if(range==='month')return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(cursor);return 'ปี '+(cursor.getFullYear()+543)}
+function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,'expense'),p=netProfit(list);let totalIn=sum(entries,'income'),totalOut=sum(entries,'expense');$('balance').textContent=fmt(totalIn+sum(entries,'capital')-totalOut+accountBalanceAdjustment);$('ovIncome').textContent=fmt(a);$('ovExpense').textContent=fmt(b);$('ovProfit').textContent=fmt(p);let suf=range==='day'?'วันนี้':range==='month'?'เดือนนี้':'ปีนี้';$('ovIncomeLabel').textContent=suf;$('ovExpenseLabel').textContent=suf;$('ovProfitLabel').textContent=suf;$('periodLabel').textContent=labelPeriod();$('pickDate').value=iso(cursor);$('chartIn').textContent=fmt(a);$('chartOut').textContent=fmt(b);$('chartProfit').textContent=fmt(p);
+ let buckets=[],labs=[];if(range==='day'){buckets=[list];labs=['วันนี้']}else if(range==='month'){let days=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();for(let d=1;d<=days;d++){let s=cursor.getFullYear()+'-'+pad(cursor.getMonth()+1)+'-'+pad(d);buckets.push(list.filter(x=>x.date===s));labs.push(d)}}else{for(let m=0;m<12;m++){buckets.push(list.filter(x=>new Date(x.date+'T12:00:00').getMonth()===m));labs.push(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][m])}}
+ let max=Math.max(1,...buckets.flatMap(v=>[sum(v,'income'),sum(v,'expense')]));$('chart').innerHTML=buckets.map((v,i)=>`<div class="col"><div class="bars"><div class="bar in" title="รายรับ ${fmt(sum(v,'income'))}" style="height:${sum(v,'income')/max*100}%"></div><div class="bar out" title="รายจ่าย ${fmt(sum(v,'expense'))}" style="height:${sum(v,'expense')/max*100}%"></div></div><small>${labs[i]}</small></div>`).join('');
+ const performance=productPerformance(list);
+ const bestSelling=performance.slice().sort((x,y)=>y.qty-x.qty).slice(0,5);
+ const bestProfit=performance.slice().sort((x,y)=>y.profit-x.profit).slice(0,5);
+ $('bestSellingCaption').textContent='5 อันดับตามจำนวนที่ขาย · '+labelPeriod();
+ $('bestProfitCaption').textContent='5 อันดับตามกำไรจากการขาย · '+labelPeriod();
+ const renderRank=(items,kind)=>items.map((x,i)=>`<div class="activity-row"><div class="activity-icon">${i+1}</div><div><b>${esc(x.name)}</b><small>${kind==='qty'?'ขายได้ '+x.qty.toLocaleString('th-TH')+' ชิ้น':'ขาย '+x.qty.toLocaleString('th-TH')+' ชิ้น · ยอดขาย '+fmt(x.revenue)}</small></div><strong class="${kind==='qty'?'':'green'}">${kind==='qty'?x.qty.toLocaleString('th-TH')+' ชิ้น':fmt(x.profit)}</strong></div>`).join('')||'<div class="empty">ยังไม่มีข้อมูลการขายในช่วงเวลานี้</div>';
+ $('bestSelling').innerHTML=renderRank(bestSelling,'qty');
+ $('bestProfit').innerHTML=renderRank(bestProfit,'profit');
+}
+function renderTables(type){
+ let list=entries.filter(x=>type==='income'?(x.type==='income'||x.type==='capital'):x.type===type),date=$(`${type}DateFilter`).value,month=$(`${type}MonthFilter`).value;
+ if(date)list=list.filter(x=>x.date===date);if(month)list=list.filter(x=>x.date.startsWith(month));
+ list.sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
+ $(type+'Rows').innerHTML=list.map(x=>{
+  if(type==='income'){
+   if(x.type==='capital')return `<tr><td>${thdate(x.date)}</td><td><b>เงินลงทุนเพิ่ม</b><br><span class="hint">${esc(x.note||'เงินส่วนตัวนำมาลงทุนในธุรกิจ')}</span></td><td>—</td><td class="green"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
+   let lines=x.items||[{name:x.title||'รายการขาย',qty:x.qty||1}],desc=lines.map(it=>`${esc(it.name)} × ${Number(it.qty)}`).join('<br>');
+   let qty=lines.reduce((n,it)=>n+Number(it.qty||0),0);
+   return `<tr><td>${thdate(x.date)}</td><td>${desc}<br><span class="hint">ประเภทลูกค้า: ${esc(x.customerType||'ไม่ระบุ')}</span></td><td>${qty} ชิ้น</td><td class="green"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
+  }
+  return `<tr><td>${thdate(x.date)}</td><td>${esc(x.category)}</td><td>${esc(x.title||x.productName||'-')}</td><td>${x.category==='สินค้า'?(Number(x.qty||0)+' '+esc(x.unit||'ชิ้น')):'-'}</td><td class="red"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6" class="empty">ไม่มีรายการในช่วงเวลานี้</td></tr>';
+}
+function renderExpenseFields(category){
+ const host=$('expenseDynamicFields');if(!host)return;
+ if(category==='สินค้า'){
+  const opts=products.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  host.innerHTML=`<div class="field"><label>ชื่อสินค้า (อ้างอิงจากสต็อก)</label><select name="expenseProductId" id="expenseProductId" required>${opts}<option value="__new__">＋ เพิ่มสินค้าใหม่</option></select></div>
+  <div id="expenseProductStockInfo" class="hint" style="grid-column:1/-1;background:var(--soft, #f3ece3);border-radius:10px;padding:10px">เลือกสินค้าเพื่อดูข้อมูลปัจจุบันจากหน้าสต็อก</div>
+  <div class="field" id="newExpenseProductWrap" style="display:none"><label>ชื่อสินค้าใหม่</label><input name="newExpenseProductName" id="newExpenseProductName" placeholder="เช่น ผ้าใบเล็ก, จานอะคริลิกสี"></div>
+  <div class="field"><label>จำนวนที่ซื้อ</label><input name="expenseQty" id="expenseQty" type="number" min="0.01" step="any" value="1" required></div>
+  <div class="field"><label>จำนวนเงินรวมที่ซื้อ (บาท)</label><input name="expenseCostTotal" id="expenseCostTotal" type="number" min="0" step=".01" placeholder="ราคารวมทั้งหมด" required></div>
+  <div class="field"><label>หน่วย</label><input name="expenseUnit" id="expenseUnit" value="ชิ้น" placeholder="ชิ้น / ชุด / ม้วน"></div>
+  <div id="expenseUnitCostPreview" class="hint" style="grid-column:1/-1">ต้นทุนต่อหน่วยของการซื้อครั้งนี้: ฿0</div>
+  <div class="hint" style="grid-column:1/-1">เมื่อบันทึก ระบบจะเพิ่มจำนวนเข้าไปในสินค้ารายการเดียวกันบนหน้าสต็อก และอัปเดตต้นทุนเฉลี่ย โดยคงราคาขายเดิมไว้</div>`;
+  const sel=$('expenseProductId'),info=$('expenseProductStockInfo');
+  const updateSelectedProduct=()=>{
+   const p=products.find(x=>x.id===sel.value);
+   if(sel.value==='__new__'){
+    $('newExpenseProductWrap').style.display='grid';
+    $('newExpenseProductName').required=true;
+    info.innerHTML='สินค้าใหม่จะถูกสร้างเป็นรายการใหม่ในหน้าสต็อกเมื่อกดบันทึก';
+   }else if(p){
+    $('newExpenseProductWrap').style.display='none';
+    $('newExpenseProductName').required=false;
+    $('expenseUnit').value=p.unit||'ชิ้น';
+    info.innerHTML=`<b>ข้อมูลปัจจุบันจากหน้าสต็อก</b><br>คงเหลือ: ${Number(p.qty||0).toLocaleString('th-TH')} ${esc(p.unit||'ชิ้น')}<br>ต้นทุนต่อหน่วย: ${fmt(p.cost||0)}<br>ราคาขายต่อหน่วย: ${fmt(p.salePrice||0)}`;
+   }
+  };
+  sel.onchange=updateSelectedProduct;
+  const updateUnitCost=()=>{
+   const q=Number($('expenseQty').value)||0,total=Number($('expenseCostTotal').value)||0;
+   $('expenseUnitCostPreview').textContent='ต้นทุนต่อหน่วยของการซื้อครั้งนี้: '+fmt(q>0?total/q:0);
+  };
+  $('expenseQty').oninput=updateUnitCost;$('expenseCostTotal').oninput=updateUnitCost;
+  updateSelectedProduct();updateUnitCost();
+ }else{
+  host.innerHTML=`<div class="field" style="grid-column:1/-1"><label>รายละเอียด</label><input name="title" placeholder="รายละเอียดค่าใช้จ่าย" required></div><div class="field"><label>จำนวนเงิน (บาท)</label><input name="amount" type="number" min="0" step=".01" required></div>`;
+ }
+}
+function addExpenseCategory(){
+ const input=$('newExpenseCategory');if(!input)return;
+ const name=input.value.trim();if(!name){alert('กรุณากรอกชื่อหมวดหมู่');return}
+ if(name==='สินค้า'){alert('มีหมวดหมู่สินค้าอยู่แล้ว');return}
+ if(!expenseCategories.includes(name)){expenseCategories.push(name);localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories))}
+ const select=$('expenseCategory');if(select){select.innerHTML=expenseCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');select.value=name;renderExpenseFields(name)}
+ input.value='';$('newExpenseCategoryWrap').style.display='none';
+}
+function render(){renderOverview();let now=iso(today),m=now.slice(0,7),y=now.slice(0,4);for(let t of ['income','expense']){$(t+'Today').textContent=fmt(sum(entries.filter(x=>x.date===now),t));$(t+'Month').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(m)),t));$(t+'Year').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(y)),t));renderTables(t)}$('stockGrid').innerHTML=products.map((p,i)=>`<div class="card stock-card">${p.image?`<img class="product-photo" src="${p.image}" alt="${esc(p.name)}">`:`<div class="product-photo" style="display:grid;place-items:center;color:#9b8876;font-size:28px">▧</div>`}<div class="label" style="margin-top:10px">วัสดุ / อุปกรณ์</div><b>${esc(p.name)}</b><div class="hint" style="min-height:30px;margin-top:3px">${esc(p.description||'ไม่มีรายละเอียด')}</div><div class="value" style="font-size:21px">${p.qty} <span class="hint">${esc(p.unit)}</span></div><div class="hint" style="display:grid;gap:3px;margin-top:7px"><span>ต้นทุนต่อหน่วย: <b>${fmt(p.cost||0)}</b></span><span>ราคาขายต่อหน่วย: <b>${fmt(p.salePrice||0)}</b></span></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn secondary" style="padding:6px 9px" onclick="editStock(${i})">แก้ไขสินค้า</button><button class="btn secondary" style="padding:6px 9px" onclick="adjustStock(${i})">ปรับจำนวน</button></div></div>`).join('')}
+let saleLines=[];
+// Close and clean up the shared entry modal (income, expense, and stock).
+function closeModal(){
+ const modal=$('modal');
+ if(modal) modal.classList.remove('show');
+ const form=$('entryForm');
+ if(form) form.reset();
+ const fields=$('formFields');
+ if(fields) fields.innerHTML='';
+ saleLines=[];
+ activeType='';
+ editingStockIndex=null;
+}
+// Allow closing by clicking the dimmed backdrop or pressing Escape.
+$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').classList.contains('show'))closeModal()});
+function openModal(type){
+ activeType=type;
+ editingStockIndex=null;
+ const submitButton=$('entryForm').querySelector('button[type="submit"]');
+ if(submitButton)submitButton.textContent='บันทึกรายการ';
+ $('modalTitle').textContent=type==='income'?'เพิ่มรายการขาย':type==='capital'?'บันทึกเงินลงทุนเพิ่ม':type==='expense'?'เพิ่มรายจ่าย':'เพิ่มสินค้าในคลัง';
+ let dateOnly=`<div class="field"><label>วันที่ขาย</label><input name="date" type="date" value="${iso(today)}" required></div>`;
+ let dateTime=`<div class="field"><label>วันที่บันทึก</label><input name="date" type="date" value="${iso(today)}" required></div><div class="field"><label>เวลา</label><input name="time" type="time" value="${pad(today.getHours())+':'+pad(today.getMinutes())}"></div>`;
+ if(type==='capital'){
+  $('formFields').innerHTML=`<div class="field"><label>วันที่นำเงินเข้าธุรกิจ</label><input name="date" type="date" value="${iso(today)}" required></div><div class="field"><label>จำนวนเงินลงทุน (บาท)</label><input name="amount" type="number" min="0.01" step=".01" placeholder="ระบุจำนวนเงิน" required></div><div class="field" style="grid-column:1/-1"><label>หมายเหตุ (ไม่บังคับ)</label><input name="note" placeholder="เช่น เติมเงินทุนส่วนตัว / เพิ่มเงินหมุนเวียน"></div><div class="hint" style="grid-column:1/-1">รายการนี้จะเพิ่มเงินคงเหลือในบัญชี แต่จะไม่นับเป็นรายรับจากการขายหรือกำไรของธุรกิจ</div>`;
+ }else if(type==='income'){
+  $('formFields').innerHTML=dateOnly+`<div class="field"><label>ประเภทลูกค้า</label><select name="customerType" required><option value="เด็ก">เด็ก</option><option value="คู่รัก">คู่รัก</option><option value="ผู้ใหญ่">ผู้ใหญ่</option><option value="วัยรุ่น">วัยรุ่น</option></select></div><div class="field" style="grid-column:1/-1"><label>เลือกสินค้าที่ขาย</label><div id="saleLines" style="display:grid;gap:9px"></div><button type="button" class="btn secondary" style="justify-self:start" onclick="addSaleLine()">＋ เพิ่มสินค้าอีกหนึ่งรายการ</button></div><div class="field" style="grid-column:1/-1;background:#f1e8dc;border-radius:12px;padding:13px"><div style="display:flex;justify-content:space-between;align-items:center"><b>ยอดรวมทั้งหมด</b><strong id="saleTotal" style="font:800 22px Manrope;color:#76583f">฿0</strong></div><small style="color:#8c7867">ราคาดึงจากราคาขายในสต็อก และคำนวณตามจำนวน</small></div>`;
+  saleLines=[];addSaleLine();
+ }else{
+  let fields=type==='expense'?`<div class="field"><label>วันที่</label><input name="date" type="date" value="${iso(today)}" required></div><div class="field"><label>หมวดหมู่</label><select name="category" id="expenseCategory">${expenseCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div><div class="field" style="grid-column:1/-1"><button type="button" class="btn secondary" style="padding:7px 10px" onclick="$('newExpenseCategoryWrap').style.display='grid'">＋ เพิ่มหมวดหมู่ใหม่</button><div id="newExpenseCategoryWrap" style="display:none;grid-template-columns:1fr auto;gap:8px;margin-top:8px"><input id="newExpenseCategory" placeholder="ชื่อหมวดหมู่ใหม่"><button type="button" class="btn" onclick="addExpenseCategory()">เพิ่ม</button></div></div><div id="expenseDynamicFields" style="display:contents"></div>`:
+  `<div class="field"><label>ชื่อสินค้า</label><input name="name" placeholder="เช่น ถาดปูนปลาสเตอร์ วงกลม" required></div><div class="field"><label>จำนวนเริ่มต้น</label><input name="qty" type="number" min="0" value="0" required></div><div class="field"><label>หน่วย</label><input name="unit" value="ชิ้น"></div><div class="field"><label>ต้นทุนต่อหน่วย (บาท)</label><input name="cost" type="number" min="0" step=".01" value="0"></div><div class="field"><label>ราคาขายต่อหน่วย (บาท)</label><input name="salePrice" type="number" min="0" step=".01" value="0"></div><div class="field" style="grid-column:1/-1"><label>รายละเอียดสินค้า</label><textarea name="description" rows="2" placeholder="รายละเอียด ขนาด สี หรือข้อมูลเพิ่มเติม"></textarea></div><div class="field" style="grid-column:1/-1"><label>รูปภาพสินค้า</label><input name="imageFile" type="file" accept="image/*"><small class="hint">เลือกรูปจากเครื่อง เพื่อแสดงในคลังและตอนเลือกขาย</small><div id="stockImagePreview"></div></div>`;
+  $('formFields').innerHTML=fields;
+  if(type==='expense'){
+   const categorySelect=$('expenseCategory');
+   renderExpenseFields(categorySelect.value);
+   categorySelect.onchange=()=>renderExpenseFields(categorySelect.value);
+  }
+  if(type==='stock'){const file=$('formFields').querySelector('input[name="imageFile"]');file.onchange=()=>{const f=file.files[0],preview=$('stockImagePreview');if(!f){preview.innerHTML='';return}const r=new FileReader();r.onload=()=>preview.innerHTML=`<img src="${r.result}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;margin-top:7px">`;r.readAsDataURL(f)}}
+ }
+ $('modal').classList.add('show');
+}
+function editStock(i){
+ const p=products[i];if(!p)return;
+ openModal('stock');
+ editingStockIndex=i;
+ $('modalTitle').textContent='แก้ไขข้อมูลสินค้า';
+ const form=$('entryForm');
+ const submitButton=form.querySelector('button[type="submit"]');
+ if(submitButton)submitButton.textContent='บันทึกการแก้ไข';
+ for(const key of ['name','qty','unit','cost','salePrice','description']){
+  const field=form.elements[key];if(field)field.value=p[key]??'';
+ }
+ const preview=$('stockImagePreview');
+ if(preview)preview.innerHTML=p.image?`<div class="hint" style="margin-top:8px">รูปภาพปัจจุบัน</div><img src="${p.image}" alt="${esc(p.name)}" style="width:100px;height:100px;object-fit:cover;border-radius:10px;margin-top:7px">`:'<div class="hint" style="margin-top:8px">ยังไม่มีรูปภาพสินค้า</div>';
+ const file=form.elements.imageFile;
+ if(file)file.onchange=()=>{
+  const f=file.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>{if(preview)preview.innerHTML=`<div class="hint" style="margin-top:8px">รูปภาพใหม่</div><img src="${reader.result}" alt="ตัวอย่างรูปภาพใหม่" style="width:100px;height:100px;object-fit:cover;border-radius:10px;margin-top:7px">`;};
+  reader.readAsDataURL(f);
+ };
+}
+function addSaleLine(){const available=products.filter(p=>Number(p.qty)>0);if(!available.length){alert('ไม่มีสินค้าในสต็อก กรุณาเพิ่มสินค้าเข้าคลังก่อน');return}saleLines.push({productId:available[0].id,qty:1});renderSaleLines()}
+function renderSaleLines(){
+ const host=$('saleLines');if(!host)return;
+ host.innerHTML=saleLines.map((line,i)=>{const p=products.find(x=>x.id===line.productId)||products[0];const opts=products.filter(x=>Number(x.qty)>0||x.id===line.productId).map(x=>`<option value="${esc(x.id)}" ${x.id===line.productId?'selected':''}>${esc(x.name)} · คงเหลือ ${x.qty} ${esc(x.unit||'ชิ้น')}</option>`).join('');const price=Number(p?.salePrice||0),total=price*Number(line.qty||0);
+ return `<div style="border:1px solid #e7dccb;border-radius:12px;padding:10px;display:grid;grid-template-columns:minmax(0,1fr) 82px 28px;gap:8px;align-items:end"><div class="field"><label>สินค้า</label><select onchange="changeSaleProduct(${i},this.value)">${opts}</select><div class="sale-product-preview">${p?.image?`<img src="${p.image}" alt="${esc(p.name)}">`:`<div class="no-photo">▧</div>`}<div><b style="font-size:11px">${esc(p?.name||'')}</b><small style="display:block;color:#8c7867">ราคาขาย ${fmt(price)} / ${esc(p?.unit||'ชิ้น')}<br>คงเหลือ ${p?.qty??0} ${esc(p?.unit||'ชิ้น')}</small></div></div></div><div class="field"><label>จำนวน</label><input type="number" min="1" max="${p?.qty??1}" value="${line.qty}" onchange="changeSaleQty(${i},this.value)"></div><button type="button" class="close" title="ลบรายการ" onclick="removeSaleLine(${i})">×</button><div style="grid-column:1/-1;text-align:right;font:700 12px Manrope;color:#76583f">รวม ${fmt(total)}</div></div>`;
+ }).join('');
+ $('saleTotal').textContent=fmt(saleLines.reduce((sum,line)=>{let p=products.find(x=>x.id===line.productId);return sum+(p?Number(p.salePrice||0)*Number(line.qty||0):0)},0));
+}
+function changeSaleProduct(i,id){saleLines[i].productId=id;renderSaleLines()}
+function changeSaleQty(i,v){let p=products.find(x=>x.id===saleLines[i].productId);saleLines[i].qty=Math.max(1,Math.min(Number(p?.qty||1),Number(v)||1));renderSaleLines()}
+function removeSaleLine(i){saleLines.splice(i,1);if(!saleLines.length)addSaleLine();else renderSaleLines()}
+function readImageFile(file){return new Promise((resolve,reject)=>{if(!file){resolve('');return}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)})}
+$('entryForm').onsubmit=async e=>{
+ e.preventDefault();let f=Object.fromEntries(new FormData(e.target));
+ if(activeType==='capital'){
+  const amount=Number(f.amount);
+  if(!(amount>0)){alert('กรุณาระบุจำนวนเงินลงทุนให้มากกว่า 0');return}
+  entries.push({id:Date.now().toString(),type:'capital',date:f.date,amount,note:(f.note||'').trim(),title:'เงินลงทุนเพิ่ม'});
+ }else if(activeType==='income'){
+  if(!saleLines.length){alert('กรุณาเลือกสินค้าอย่างน้อย 1 รายการ');return}
+  for(const line of saleLines){let p=products.find(x=>x.id===line.productId);if(!p||Number(line.qty)>Number(p.qty)){alert('จำนวนสินค้าไม่เพียงพอในสต็อก: '+(p?.name||''));return}}
+  const items=saleLines.map(line=>{let p=products.find(x=>x.id===line.productId),q=Number(line.qty),price=Number(p.salePrice||0);p.qty-=q;const unitCost=Number(p.cost)||0;return {productId:p.id,name:p.name,image:p.image||'',qty:q,price,unitCost,costTotal:q*unitCost,lineTotal:q*price}});
+  const amount=items.reduce((a,x)=>a+x.lineTotal,0);
+  entries.push({id:Date.now().toString(),type:'income',date:f.date,customerType:f.customerType,title:items.map(x=>x.name).join(', '),items,amount,qty:items.reduce((a,x)=>a+x.qty,0)});
+ }else if(activeType==='stock'){
+  const selectedImage=await readImageFile(e.target.elements.imageFile.files[0]);
+  if(editingStockIndex!==null&&products[editingStockIndex]){
+   const old=products[editingStockIndex];
+   products[editingStockIndex]={...old,name:f.name,description:f.description||'',qty:Math.max(0,Number(f.qty)||0),unit:f.unit||'ชิ้น',cost:Math.max(0,Number(f.cost)||0),salePrice:Math.max(0,Number(f.salePrice)||0),image:selectedImage||old.image||''};
+  }else{
+   products.push({id:'p'+Date.now(),name:f.name,description:f.description||'',qty:Math.max(0,Number(f.qty)||0),unit:f.unit||'ชิ้น',cost:Math.max(0,Number(f.cost)||0),salePrice:Math.max(0,Number(f.salePrice)||0),image:selectedImage});
+  }
+ }else if(activeType==='expense'){
+  const category=f.category;
+  if(category==='สินค้า'){
+   const qty=Number(f.expenseQty),total=Number(f.expenseCostTotal),unit=f.expenseUnit||'ชิ้น';
+   if(!(qty>0)){alert('จำนวนสินค้าต้องมากกว่า 0');return}
+   if(!(total>=0)){alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');return}
+   let product;
+   if(f.expenseProductId==='__new__'){
+    const name=(f.newExpenseProductName||'').trim();
+    if(!name){alert('กรุณากรอกชื่อสินค้าใหม่');return}
+    product=products.find(p=>p.name.trim().toLowerCase()===name.toLowerCase());
+    if(!product){product={id:'p'+Date.now(),name,description:'',qty:0,unit,cost:0,salePrice:0,image:''};products.push(product)}
+   }else product=products.find(p=>p.id===f.expenseProductId);
+   if(!product){alert('ไม่พบสินค้าที่เลือก กรุณาเลือกสินค้าอีกครั้ง');return}
+   const oldQty=Number(product.qty)||0,oldCost=Number(product.cost)||0,unitCost=qty>0?total/qty:0,newQty=oldQty+qty;
+   product.qty=newQty;product.unit=unit;product.cost=newQty>0?Number((((oldQty*oldCost)+(qty*unitCost))/newQty).toFixed(2)):unitCost;
+   product.salePrice=Number(product.salePrice)||0;
+   entries.push({id:Date.now().toString(),type:'expense',date:f.date,category:'สินค้า',title:product.name,productName:product.name,productId:product.id,qty,unit,amount:total,stockAddedQty:qty});
+  }else{
+   const amount=Number(f.amount);
+   if(!(amount>=0)){alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');return}
+   entries.push({id:Date.now().toString(),type:'expense',date:f.date,category,title:f.title,amount});
+  }
+ }else entries.push({id:Date.now().toString(),type:activeType,...f,amount:Number(f.amount),qty:Number(f.qty||1)});
+ save();closeModal();render();e.target.reset();
+};
+function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
+function adjustAccountBalance(){
+ const current=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')+accountBalanceAdjustment;
+ const entered=prompt('กรอกยอดเงินจริงที่มีอยู่ในบัญชีตอนนี้ (บาท)',String(Number(current.toFixed(2))));
+ if(entered===null||entered.trim()===''||!Number.isFinite(Number(entered))||Number(entered)<0){if(entered!==null)alert('กรุณากรอกยอดเงินเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
+ const target=Number(entered);
+ accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense'))).toFixed(2));
+ save();render();
+}
+function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
+function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
+function exportData(){let blob=new Blob([JSON.stringify({entries,products,accountBalanceAdjustment},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='atelier-backup.json';a.click();URL.revokeObjectURL(a.href)}
+$('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries)||!Array.isArray(d.products))throw 0;entries=d.entries;products=d.products;if(d.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(d.accountBalanceAdjustment)||0;save();render();alert('นำเข้าข้อมูลเรียบร้อย')}catch{alert('ไฟล์สำรองไม่ถูกต้อง')}};r.readAsText(f)};
+if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
+function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('atelier_dark',document.body.classList.contains('dark'))}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+for(let t of ['income','expense']){$(t+'DateFilter').onchange=()=>renderTables(t);let sel=$(t+'MonthFilter');for(let i=0;i<12;i++){let v=today.getFullYear()+'-'+pad(i+1);sel.add(new Option(new Intl.DateTimeFormat('th-TH',{month:'long'}).format(new Date(today.getFullYear(),i,1)),v))}sel.onchange=()=>renderTables(t)}
+function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');render();
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></body></html>
