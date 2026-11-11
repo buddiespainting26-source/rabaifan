@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4eee3"><link rel="manifest" href="manifest.webmanifest">
-<title>Atelier — Painting Workshop Manager</title>
+<meta name="theme-color" content="#f4eee3"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Atelier"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="manifest" href="./manifest.webmanifest">
+<title>Atelier Manager — Painting Workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -20,11 +20,138 @@ main{padding:29px 38px 55px;min-width:0}.top{display:flex;justify-content:space-
 .sale-product-preview .no-photo{width:54px;height:54px;border-radius:9px;background:#e8ddcd;display:grid;place-items:center;color:#8c7867;font-size:20px}
 #formFields input[type=file]{font-size:11px;padding:7px}
 @media(max-width:520px){.stock-grid{grid-template-columns:1fr 1fr}.product-photo{height:95px}}.stock-card{padding:15px}.stock-card b{display:block;margin:7px 0}.mobile-nav{display:none}
-@media(max-width:920px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:23px 20px 95px}.cards{grid-template-columns:repeat(2,1fr)}.balance{grid-column:span 2}.grid{grid-template-columns:1fr}.mobile-nav{display:flex;position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fffdf8f2;backdrop-filter:blur(12px);border-top:1px solid var(--line);justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom))}.mobile-nav button{border:0;background:none;color:#8b7765;font-size:9px;display:grid;gap:3px;justify-items:center}.mobile-nav button.active{color:var(--ink);font-weight:700}.mobile-nav span{font-size:17px}}
+@media(max-width:920px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:23px 20px 95px}.cards{grid-template-columns:repeat(2,1fr)}.balance{grid-column:span 2}.grid{grid-template-columns:1fr}.mobile-nav{display:flex;position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fffdf8f2;backdrop-filter:blur(12px);border-top:1px solid var(--line);justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom))}.mobile-nav button{border:0;background:none;color:#8b7765;font-size:8px;display:grid;gap:3px;justify-items:center}.mobile-nav button.active{color:var(--ink);font-weight:700}.mobile-nav span{font-size:16px}}
 @media(max-width:520px){main{padding:19px 13px 90px}.heading{font-size:22px}.date-pill{font-size:9px;padding:8px}.cards{gap:8px}.metric{padding:13px}.metric .value{font-size:17px}.balance{padding:16px}.balance .value{font-size:23px}.chart-card,.panel{padding:14px}.section-head{align-items:flex-start;flex-wrap:wrap}.chart{gap:2px;height:185px}.bars{height:153px}.col small{font-size:8px}.form-grid{grid-template-columns:1fr}.stock-grid{grid-template-columns:1fr 1fr}}
 body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b6a28e;--line:#493a2e;--shadow:0 10px 30px #0002;background:var(--bg);color:var(--ink)}body.dark .sidebar{background:#261f1a}body.dark .nav button{color:#c0aa95}body.dark .nav button.active{background:#493a2e;color:#fff4e6}body.dark .side-note{background:#3b3027;color:#c9b49f}body.dark .side-note b{color:var(--ink)}body.dark .metric-icon,body.dark .activity-icon,body.dark .seg,body.dark .month-switch,body.dark .month-switch button,body.dark .btn.secondary{background:#493a2e;color:var(--ink)}body.dark .chart{background:repeating-linear-gradient(to bottom,transparent 0,transparent 50px,#40352c 51px,#40352c 52px)}body.dark .bar.in{background:#c5a486}body.dark .bar.out{background:#765b49}body.dark .mobile-nav{background:#2d241ef2;border-color:var(--line)}
+
+/* Monthly profit distribution */
+.profit-hero{padding:22px;background:var(--paper);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow);margin-bottom:15px}
+.profit-amount{font:800 30px Manrope;letter-spacing:-.8px;margin:8px 0}
+.split-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}
+.split-box{padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+.split-box .pct{font:800 22px Manrope}
+.split-box .money{font:800 22px Manrope;margin-top:8px}
+.split-bar{height:12px;display:flex;overflow:hidden;border-radius:20px;background:var(--paper2);margin:13px 0}
+.split-bar .withdraw{width:30%;background:#b47764}.split-bar .retained{width:70%;background:#71836b}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;background:#eee4d5;color:#775e48}
+.status.done{background:#e2eadf;color:#52694c}
+.status.pending{background:#f4e8d9;color:#936b3d}
+.profit-details{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}
+.profit-detail{padding:12px;background:var(--paper2);border-radius:11px}
+.profit-detail small{display:block;color:var(--muted);font-size:10px}
+.profit-detail b{display:block;margin-top:5px;font:700 14px Manrope}
+@media(max-width:520px){.split-grid{grid-template-columns:1fr 1fr}.profit-amount{font-size:25px}.profit-details{grid-template-columns:1fr}}
+body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background:#493a2e}
+
 </style></head>
 <body>
+
+<div id="cloudGate" style="position:fixed;inset:0;z-index:9999;background:#f4eee3;display:flex;align-items:center;justify-content:center;padding:20px;font-family:'IBM Plex Sans Thai',sans-serif">
+ <div style="width:min(420px,100%);background:#fffdf8;border:1px solid #e7dccb;border-radius:22px;padding:28px;box-shadow:0 18px 55px #38291f18;color:#38291f">
+  <div style="font:800 22px Manrope;margin-bottom:4px">Atelier Manager</div>
+  <div style="font-size:12px;color:#8c7867;margin-bottom:22px">Painting Workshop · Cloud Workspace</div>
+  <div id="cloudGateMessage" style="font-size:12px;color:#8c7867;margin-bottom:12px">กรุณาเข้าสู่ระบบเพื่อใช้งานข้อมูลร้าน</div>
+  <form id="cloudLoginForm" style="display:grid;gap:11px">
+   <label style="font-size:11px;color:#8c7867">อีเมล<input id="cloudEmail" type="email" required autocomplete="username" style="display:block;width:100%;padding:12px;border:1px solid #e7dccb;border-radius:10px;margin-top:5px;background:#fffdf8;color:#38291f"></label>
+   <label style="font-size:11px;color:#8c7867">รหัสผ่าน<input id="cloudPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;padding:12px;border:1px solid #e7dccb;border-radius:10px;margin-top:5px;background:#fffdf8;color:#38291f"></label>
+   <button id="cloudLoginButton" type="submit" style="border:0;border-radius:11px;padding:12px;background:#38291f;color:#fff7eb;font-weight:700">เข้าสู่ระบบ</button>
+  </form>
+  <div style="font-size:10px;color:#8c7867;line-height:1.7;margin-top:14px">บัญชีผู้ใช้จะถูกสร้างและเชิญโดยผู้ดูแลใน Supabase เท่านั้น</div>
+ </div>
+</div>
+<div id="cloudStatus" style="position:fixed;right:12px;top:12px;z-index:1000;background:#fffdf8;border:1px solid #e7dccb;color:#76583f;border-radius:20px;padding:6px 10px;font:11px 'IBM Plex Sans Thai',sans-serif;display:none">Cloud: เชื่อมต่อแล้ว</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+(function(){
+ const gate=document.getElementById('cloudGate'), msg=document.getElementById('cloudGateMessage');
+ const form=document.getElementById('cloudLoginForm'), btn=document.getElementById('cloudLoginButton'), status=document.getElementById('cloudStatus');
+ const cfg=window.ATELIER_SUPABASE_CONFIG||{};
+ let client=null,businessId=null,revision=0,currentUserId=null,saveQueue=Promise.resolve(),realtimeChannel=null;
+ const setMessage=(s,bad=false)=>{msg.textContent=s;msg.style.color=bad?'#b47764':'#8c7867'};
+ const setStatus=s=>{status.textContent=s;status.style.display='block'};
+ const showGate=()=>gate.style.display='flex',hideGate=()=>gate.style.display='none';
+ const snapshot=()=>({
+  entries:JSON.parse(localStorage.getItem('atelier_entries')||'[]'),
+  products:JSON.parse(localStorage.getItem('atelier_products')||'[]'),
+  expenseCategories:JSON.parse(localStorage.getItem('atelier_expense_categories')||'[]'),
+  accountBalanceAdjustment:Number(localStorage.getItem('atelier_balance_adjustment')||0),
+  distributions:JSON.parse(localStorage.getItem('atelier_distributions')||'[]')
+ });
+ const applyPayload=p=>{
+  const d=p||{};
+  localStorage.setItem('atelier_entries',JSON.stringify(Array.isArray(d.entries)?d.entries:[]));
+  localStorage.setItem('atelier_products',JSON.stringify(Array.isArray(d.products)?d.products:[]));
+  localStorage.setItem('atelier_expense_categories',JSON.stringify(Array.isArray(d.expenseCategories)?d.expenseCategories:['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด']));
+  localStorage.setItem('atelier_balance_adjustment',String(Number(d.accountBalanceAdjustment)||0));
+  localStorage.setItem('atelier_distributions',JSON.stringify(Array.isArray(d.distributions)?d.distributions:[]));
+ };
+ async function hydrate(){
+  const {data:mem,error:me}=await client.from('business_members').select('business_id,role').limit(1).maybeSingle();
+  if(me)throw me;
+  if(!mem){setMessage('บัญชีนี้ยังไม่ได้ถูกเพิ่มเป็นสมาชิกของร้าน กรุณาให้ Owner เพิ่มบัญชีนี้ใน Supabase',true);return false}
+  businessId=mem.business_id;
+  const {data:state,error}=await client.from('workspace_state').select('payload,revision').eq('business_id',businessId).maybeSingle();
+  if(error)throw error;
+  if(state){
+   const marker=businessId+':'+state.revision;
+   if(sessionStorage.getItem('atelier_cloud_hydrated')!==marker){
+    applyPayload(state.payload);revision=Number(state.revision);
+    sessionStorage.setItem('atelier_cloud_hydrated',marker);location.reload();return false;
+   }
+   revision=Number(state.revision);
+  }else{
+   const {data:newRev,error:saveErr}=await client.rpc('save_workspace_state',{p_business_id:businessId,p_payload:snapshot(),p_expected_revision:0});
+   if(saveErr)throw saveErr;revision=Number(newRev)||1;
+   sessionStorage.setItem('atelier_cloud_hydrated',businessId+':'+revision);
+  }
+  hideGate();setStatus('Cloud: เชื่อมต่อแล้ว');
+  if(realtimeChannel)await client.removeChannel(realtimeChannel);
+  realtimeChannel=client.channel('atelier-state-'+businessId)
+   .on('postgres_changes',{event:'*',schema:'public',table:'workspace_state',filter:'business_id=eq.'+businessId},ev=>{
+    const row=ev.new;if(!row||row.updated_by===currentUserId||Number(row.revision)<=revision)return;
+    revision=Number(row.revision);applyPayload(row.payload);
+    sessionStorage.setItem('atelier_cloud_hydrated',businessId+':'+revision);
+    setStatus('Cloud: มีข้อมูลใหม่ · กำลังอัปเดต');location.reload();
+   }).subscribe();
+  return true;
+ }
+ window.atelierCloudSave=function(payload){
+  if(!client||!businessId)return;
+  const copy=JSON.parse(JSON.stringify(payload));
+  saveQueue=saveQueue.then(async()=>{
+   const {data:newRev,error}=await client.rpc('save_workspace_state',{p_business_id:businessId,p_payload:copy,p_expected_revision:revision});
+   if(error){
+    setStatus('Cloud: พบข้อมูลเปลี่ยนจากอีกอุปกรณ์');
+    const {data:latest}=await client.from('workspace_state').select('payload,revision').eq('business_id',businessId).maybeSingle();
+    if(latest){revision=Number(latest.revision);applyPayload(latest.payload);sessionStorage.setItem('atelier_cloud_hydrated',businessId+':'+revision)}
+    alert('ข้อมูลมีการเปลี่ยนแปลงจากอีกอุปกรณ์ ระบบโหลดข้อมูลล่าสุดแล้ว กรุณาตรวจสอบและทำรายการอีกครั้ง');location.reload();return;
+   }
+   revision=Number(newRev)||revision+1;sessionStorage.setItem('atelier_cloud_hydrated',businessId+':'+revision);setStatus('Cloud: บันทึกแล้ว');
+  }).catch(err=>{console.error(err);setStatus('Cloud: บันทึกไม่สำเร็จ')});
+ };
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();if(!client){setMessage('กรุณาตั้งค่า URL และ Publishable Key ใน supabase-config.js ก่อน',true);return}
+  btn.disabled=true;btn.textContent='กำลังเข้าสู่ระบบ…';
+  const {error}=await client.auth.signInWithPassword({email:document.getElementById('cloudEmail').value,password:document.getElementById('cloudPassword').value});
+  if(error){setMessage(error.message,true);btn.disabled=false;btn.textContent='เข้าสู่ระบบ';return}
+  const {data:{user}}=await client.auth.getUser();currentUserId=user?.id||null;
+  try{const ok=await hydrate();if(!ok){btn.disabled=false;btn.textContent='เข้าสู่ระบบ'}}catch(err){setMessage('เชื่อมต่อไม่สำเร็จ: '+(err.message||err),true);btn.disabled=false;btn.textContent='เข้าสู่ระบบ'}
+ });
+ window.atelierCloudSignOut=async()=>{if(client)await client.auth.signOut();sessionStorage.removeItem('atelier_cloud_hydrated');location.reload()};
+ async function start(){
+  if(!cfg.url||!cfg.publishableKey||cfg.url.includes('YOUR_')||cfg.publishableKey.includes('YOUR_')){showGate();setMessage('ใส่ Supabase URL และ Publishable Key ในไฟล์ supabase-config.js ก่อน',true);return}
+  if(!window.supabase){showGate();setMessage('โหลด Supabase client ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต',true);return}
+  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const {data:{session},error}=await client.auth.getSession();if(error)throw error;
+  if(!session){showGate();return}
+  currentUserId=session.user.id;
+  try{await hydrate()}catch(err){showGate();setMessage('เชื่อมต่อข้อมูลร้านไม่สำเร็จ: '+(err.message||err),true)}
+ }
+ start().catch(err=>{showGate();setMessage('เกิดข้อผิดพลาด: '+(err.message||err),true)});
+})();
+</script>
+
 <div class="app">
 <aside class="sidebar">
  <div class="brand"><div class="logo">A.</div><div><b>Atelier Manager</b><small>Painting Workshop</small></div></div>
@@ -33,7 +160,8 @@ body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b
   <button data-page="income"><span class="ico">↗</span>รายรับ / การขาย</button>
   <button data-page="expense"><span class="ico">↙</span>รายจ่าย</button>
   <button data-page="stock"><span class="ico">▤</span>สต็อกสินค้า</button>
-  <button data-page="settings"><span class="ico">⚙</span>บันทึกและตั้งค่า</button>
+  <button data-page="distribution"><span class="ico">％</span>แบ่งกำไร</button>
+   <button data-page="settings"><span class="ico">⚙</span>บันทึกและตั้งค่า</button>
  </nav></div><div class="side-note"><b>Painting Workshop</b>จัดการยอดขายเวิร์กช็อปเพ้นติ้ง รายรับ รายจ่าย และวัสดุอุปกรณ์ในที่เดียว</div>
 </aside>
 <main>
@@ -61,9 +189,44 @@ body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b
  <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="expenseDateFilter"><select id="expenseMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
 </section>
 <section class="page" id="stock"><div class="toolbar"><div><h2 style="margin:0;font-size:17px">คลังสินค้าและวัสดุ</h2><div class="hint">ตัวอย่างรายการอุปกรณ์สำหรับเวิร์กช็อปเพ้นติ้ง</div></div><button class="btn" onclick="openModal('stock')">＋ เพิ่มสินค้า</button></div><div class="stock-grid" id="stockGrid"></div><div class="card panel" style="margin-top:15px"><h2 style="font-size:15px;margin:0 0 12px">ประวัติการเคลื่อนไหว</h2><div class="hint">รายการรับเข้าและเบิกใช้จะแสดงในส่วนนี้เมื่อมีการพัฒนาระบบสต็อกเต็มรูปแบบ</div></div></section>
-<section class="page" id="settings"><div class="card panel"><h2 style="font-size:16px;margin-top:0">บันทึกและตั้งค่า</h2><p class="hint">ข้อมูลตัวอย่างในเวอร์ชันทดลองนี้บันทึกไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p><div class="toolbar" style="justify-content:flex-start"><button class="btn" onclick="exportData()">ส่งออกข้อมูลสำรอง (JSON)</button><label class="btn secondary" for="importFile">นำเข้าข้อมูลสำรอง</label><input type="file" id="importFile" accept=".json,application/json" hidden></div><p class="hint">ขั้นตอนถัดไปจะเชื่อมฐานข้อมูลออนไลน์ เพื่อให้ iPhone, iPad และคอมพิวเตอร์เห็นข้อมูลชุดเดียวกัน</p></div></section>
+
+<section class="page" id="distribution">
+ <div class="profit-hero">
+  <div class="section-head"><div><h2>แบ่งกำไรประจำเดือน</h2><p>คำนวณกำไรสุทธิหลังหักค่าใช้จ่ายดำเนินงานและต้นทุนสินค้าที่ขายจริง</p></div><span class="status pending" id="distributionStatus">รอตัดยอด</span></div>
+  <div class="toolbar" style="margin:15px 0 8px">
+   <div class="month-switch"><button type="button" id="distPrev">‹</button><span id="distMonthLabel"></span><button type="button" id="distNext">›</button></div>
+   <div class="filters"><input type="month" id="distMonth" aria-label="เลือกเดือน"></div>
+  </div>
+  <div class="label">กำไรสุทธิที่นำมาแบ่ง</div><div class="profit-amount" id="distProfit">฿0.00</div>
+  <div class="profit-details">
+   <div class="profit-detail"><small>รายรับจากการขาย</small><b id="distRevenue">฿0.00</b></div>
+   <div class="profit-detail"><small>ค่าใช้จ่ายดำเนินงาน</small><b id="distOperating">฿0.00</b></div>
+   <div class="profit-detail"><small>ต้นทุนสินค้าที่ขาย</small><b id="distCogs">฿0.00</b></div>
+  </div>
+  <div class="split-grid">
+   <div class="split-box"><div class="pct" style="color:#b47764">30% · ถอนออก</div><div class="money" id="distWithdraw">฿0.00</div><small class="hint">เงินที่นำออกจากธุรกิจ</small></div>
+   <div class="split-box"><div class="pct" style="color:#71836b">70% · ทุนสะสม</div><div class="money" id="distRetained">฿0.00</div><small class="hint">กำไรที่คงอยู่ในธุรกิจ</small></div>
+  </div>
+  <div class="split-bar"><div class="withdraw"></div><div class="retained"></div></div>
+  <div class="hint">การตัดยอด 30% จะบันทึกเป็นรายการถอนเงินและหักจากเงินคงเหลือ ส่วน 70% ไม่ใช่เงินเข้าใหม่ แต่เป็นส่วนกำไรที่คงอยู่ในธุรกิจ</div>
+  <div class="toolbar" style="justify-content:flex-end;margin-bottom:0">
+   <button class="btn" id="cutProfitButton" onclick="cutMonthlyProfit()">ตัดยอดกำไรประจำเดือน</button>
+  </div>
+ </div>
+ <div class="card panel">
+  <div class="section-head"><div><h2>ประวัติการแบ่งกำไร</h2><p>ตรวจสอบยอดถอนและทุนสะสมของแต่ละเดือน</p></div></div>
+  <div class="profit-details" style="margin-bottom:14px">
+   <div class="profit-detail"><small>ถอนกำไรสะสม</small><b id="totalWithdrawn">฿0.00</b></div>
+   <div class="profit-detail"><small>ทุนสะสมจากส่วนแบ่ง 70%</small><b id="totalRetained">฿0.00</b></div>
+   <div class="profit-detail"><small>กำไรที่รอตัดยอด</small><b id="totalPending">฿0.00</b></div>
+  </div>
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>เดือน</th><th>กำไรสุทธิ</th><th>ถอน 30%</th><th>เก็บ 70%</th><th>วันที่ตัดยอด</th><th>สถานะ</th></tr></thead><tbody id="distributionRows"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="settings"><div class="card panel"><h2 style="font-size:16px;margin-top:0">บันทึกและตั้งค่า</h2><p class="hint">ข้อมูลตัวอย่างในเวอร์ชันทดลองนี้บันทึกไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p><div class="toolbar" style="justify-content:flex-start"><button class="btn" onclick="exportData()">ส่งออกข้อมูลสำรอง (JSON)</button><label class="btn secondary" for="importFile">นำเข้าข้อมูลสำรอง</label><input type="file" id="importFile" accept=".json,application/json" hidden></div><p class="hint">ขั้นตอนถัดไปจะเชื่อมฐานข้อมูลออนไลน์ เพื่อให้ iPhone, iPad และคอมพิวเตอร์เห็นข้อมูลชุดเดียวกัน</p></div><button class="btn secondary" style="margin-top:12px" onclick="atelierCloudSignOut()">ออกจากระบบ Cloud</button></section>
 </main></div>
-<nav class="mobile-nav"><button class="active" data-page="overview"><span>▦</span>ภาพรวม</button><button data-page="income"><span>↗</span>รายรับ</button><button data-page="expense"><span>↙</span>รายจ่าย</button><button data-page="stock"><span>▤</span>สต็อก</button><button data-page="settings"><span>⚙</span>ตั้งค่า</button></nav>
+<nav class="mobile-nav"><button class="active" data-page="overview"><span>▦</span>ภาพรวม</button><button data-page="income"><span>↗</span>รายรับ</button><button data-page="expense"><span>↙</span>รายจ่าย</button><button data-page="stock"><span>▤</span>สต็อก</button><button data-page="distribution"><span>％</span>แบ่งกำไร</button><button data-page="settings"><span>⚙</span>ตั้งค่า</button></nav>
 <div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">เพิ่มรายการ</h3><button class="close" onclick="closeModal()">×</button></div><form id="entryForm"><div id="formFields" class="form-grid"></div><div class="modal-actions"><button type="button" class="btn secondary" onclick="closeModal()">ยกเลิก</button><button class="btn" type="submit">บันทึกรายการ</button></div></form></div></div>
 <script>
 const $=id=>document.getElementById(id), today=new Date(), pad=n=>String(n).padStart(2,'0'), iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()), fmt=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2}), thdate=s=>new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric'}).format(new Date(s+'T12:00:00'));
@@ -80,8 +243,16 @@ products.forEach(p=>{if(p.description==null)p.description='';if(p.image==null)p.
 let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categories')||'null')||['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด'];
 if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
 let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
+let distributions=JSON.parse(localStorage.getItem('atelier_distributions')||'[]');
 let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null;
-function save(){localStorage.setItem('atelier_entries',JSON.stringify(entries));localStorage.setItem('atelier_products',JSON.stringify(products));localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories));localStorage.setItem('atelier_balance_adjustment',String(accountBalanceAdjustment))}
+function save(){
+ localStorage.setItem('atelier_entries',JSON.stringify(entries));
+ localStorage.setItem('atelier_products',JSON.stringify(products));
+ localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories));
+ localStorage.setItem('atelier_balance_adjustment',String(accountBalanceAdjustment));
+ localStorage.setItem('atelier_distributions',JSON.stringify(distributions));
+ if(window.atelierCloudSave)window.atelierCloudSave({entries,products,expenseCategories,accountBalanceAdjustment,distributions});
+}
 function sum(list,type){return list.filter(x=>!type||x.type===type).reduce((a,x)=>a+Number(x.amount),0)}
 function productPerformance(list){
  const map=new Map();
@@ -96,17 +267,32 @@ function productPerformance(list){
  }));
  return [...map.values()];
 }
-function netProfit(list){return sum(list,'income')-sum(list,'expense')}
+function costOfGoodsSold(list){
+ return list.filter(x=>x.type==='income').reduce((total,sale)=>
+  total+(sale.items||[]).reduce((n,it)=>{
+   const q=Number(it.qty)||0;
+   const captured=it.costTotal!=null?Number(it.costTotal):((Number(it.unitCost)||0)*q);
+   return n+captured;
+  },0),0);
+}
+function operatingExpenses(list){return sum(list.filter(x=>x.type==='expense'&&x.category!=='สินค้า'))}
+function netProfit(list){return sum(list,'income')-operatingExpenses(list)-costOfGoodsSold(list)}
+function monthKey(date){return String(date||'').slice(0,7)}
+function monthProfitData(month){
+ const list=entries.filter(x=>monthKey(x.date)===month);
+ const revenue=sum(list,'income'),operating=operatingExpenses(list),cogs=costOfGoodsSold(list);
+ return {list,revenue,operating,cogs,profit:revenue-operating-cogs};
+}
 function inPeriod(date,r,c){let d=new Date(date+'T12:00:00');if(r==='day')return iso(d)===iso(c);if(r==='month')return d.getFullYear()===c.getFullYear()&&d.getMonth()===c.getMonth();return d.getFullYear()===c.getFullYear()}
 function periodData(){return entries.filter(x=>inPeriod(x.date,range,cursor))}
-function nav(page){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('pageTitle').textContent=({overview:'ภาพรวมธุรกิจ',income:'รายรับ / การขาย',expense:'รายจ่าย',stock:'สต็อกสินค้า',settings:'บันทึกและตั้งค่า'})[page];$('themeToggle').style.display=page==='settings'?'none':'inline-flex';render()}
+function nav(page){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('pageTitle').textContent=({overview:'ภาพรวมธุรกิจ',income:'รายรับ / การขาย',expense:'รายจ่าย',stock:'สต็อกสินค้า',settings:'บันทึกและตั้งค่า',distribution:'แบ่งกำไร'})[page];$('themeToggle').style.display=page==='settings'?'none':'inline-flex';render()}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>nav(b.dataset.page));
 function setRange(r){range=r;document.querySelectorAll('[data-range]').forEach(b=>b.classList.toggle('active',b.dataset.range===r));render()}
 document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>setRange(b.dataset.range));
 function move(n){if(range==='day')cursor.setDate(cursor.getDate()+n);else if(range==='month')cursor.setMonth(cursor.getMonth()+n);else cursor.setFullYear(cursor.getFullYear()+n);render()}
 $('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('pickDate').value=iso(cursor);$('pickDate').onchange=e=>{if(e.target.value){cursor=new Date(e.target.value+'T12:00:00');render()}};
 function labelPeriod(){if(range==='day')return thdate(iso(cursor));if(range==='month')return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(cursor);return 'ปี '+(cursor.getFullYear()+543)}
-function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,'expense'),p=netProfit(list);let totalIn=sum(entries,'income'),totalOut=sum(entries,'expense');$('balance').textContent=fmt(totalIn+sum(entries,'capital')-totalOut+accountBalanceAdjustment);$('ovIncome').textContent=fmt(a);$('ovExpense').textContent=fmt(b);$('ovProfit').textContent=fmt(p);let suf=range==='day'?'วันนี้':range==='month'?'เดือนนี้':'ปีนี้';$('ovIncomeLabel').textContent=suf;$('ovExpenseLabel').textContent=suf;$('ovProfitLabel').textContent=suf;$('periodLabel').textContent=labelPeriod();$('pickDate').value=iso(cursor);$('chartIn').textContent=fmt(a);$('chartOut').textContent=fmt(b);$('chartProfit').textContent=fmt(p);
+function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,'expense'),p=netProfit(list);let totalIn=sum(entries,'income'),totalOut=sum(entries,'expense');$('balance').textContent=fmt(totalIn+sum(entries,'capital')-totalOut-distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0)+accountBalanceAdjustment);$('ovIncome').textContent=fmt(a);$('ovExpense').textContent=fmt(b);$('ovProfit').textContent=fmt(p);let suf=range==='day'?'วันนี้':range==='month'?'เดือนนี้':'ปีนี้';$('ovIncomeLabel').textContent=suf;$('ovExpenseLabel').textContent=suf;$('ovProfitLabel').textContent=suf;$('periodLabel').textContent=labelPeriod();$('pickDate').value=iso(cursor);$('chartIn').textContent=fmt(a);$('chartOut').textContent=fmt(b);$('chartProfit').textContent=fmt(p);
  let buckets=[],labs=[];if(range==='day'){buckets=[list];labs=['วันนี้']}else if(range==='month'){let days=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();for(let d=1;d<=days;d++){let s=cursor.getFullYear()+'-'+pad(cursor.getMonth()+1)+'-'+pad(d);buckets.push(list.filter(x=>x.date===s));labs.push(d)}}else{for(let m=0;m<12;m++){buckets.push(list.filter(x=>new Date(x.date+'T12:00:00').getMonth()===m));labs.push(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][m])}}
  let max=Math.max(1,...buckets.flatMap(v=>[sum(v,'income'),sum(v,'expense')]));$('chart').innerHTML=buckets.map((v,i)=>`<div class="col"><div class="bars"><div class="bar in" title="รายรับ ${fmt(sum(v,'income'))}" style="height:${sum(v,'income')/max*100}%"></div><div class="bar out" title="รายจ่าย ${fmt(sum(v,'expense'))}" style="height:${sum(v,'expense')/max*100}%"></div></div><small>${labs[i]}</small></div>`).join('');
  const performance=productPerformance(list);
@@ -173,12 +359,61 @@ function addExpenseCategory(){
  const input=$('newExpenseCategory');if(!input)return;
  const name=input.value.trim();if(!name){alert('กรุณากรอกชื่อหมวดหมู่');return}
  if(name==='สินค้า'){alert('มีหมวดหมู่สินค้าอยู่แล้ว');return}
- if(!expenseCategories.includes(name)){expenseCategories.push(name);localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories))}
+ if(!expenseCategories.includes(name)){expenseCategories.push(name);localStorage.setItem('atelier_expense_categories',JSON.stringify(expenseCategories));save()}
  const select=$('expenseCategory');if(select){select.innerHTML=expenseCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');select.value=name;renderExpenseFields(name)}
  input.value='';$('newExpenseCategoryWrap').style.display='none';
 }
-function render(){renderOverview();let now=iso(today),m=now.slice(0,7),y=now.slice(0,4);for(let t of ['income','expense']){$(t+'Today').textContent=fmt(sum(entries.filter(x=>x.date===now),t));$(t+'Month').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(m)),t));$(t+'Year').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(y)),t));renderTables(t)}$('stockGrid').innerHTML=products.map((p,i)=>`<div class="card stock-card">${p.image?`<img class="product-photo" src="${p.image}" alt="${esc(p.name)}">`:`<div class="product-photo" style="display:grid;place-items:center;color:#9b8876;font-size:28px">▧</div>`}<div class="label" style="margin-top:10px">วัสดุ / อุปกรณ์</div><b>${esc(p.name)}</b><div class="hint" style="min-height:30px;margin-top:3px">${esc(p.description||'ไม่มีรายละเอียด')}</div><div class="value" style="font-size:21px">${p.qty} <span class="hint">${esc(p.unit)}</span></div><div class="hint" style="display:grid;gap:3px;margin-top:7px"><span>ต้นทุนต่อหน่วย: <b>${fmt(p.cost||0)}</b></span><span>ราคาขายต่อหน่วย: <b>${fmt(p.salePrice||0)}</b></span></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn secondary" style="padding:6px 9px" onclick="editStock(${i})">แก้ไขสินค้า</button><button class="btn secondary" style="padding:6px 9px" onclick="adjustStock(${i})">ปรับจำนวน</button></div></div>`).join('')}
+function render(){renderOverview();renderDistribution();let now=iso(today),m=now.slice(0,7),y=now.slice(0,4);for(let t of ['income','expense']){$(t+'Today').textContent=fmt(sum(entries.filter(x=>x.date===now),t));$(t+'Month').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(m)),t));$(t+'Year').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(y)),t));renderTables(t)}$('stockGrid').innerHTML=products.map((p,i)=>`<div class="card stock-card">${p.image?`<img class="product-photo" src="${p.image}" alt="${esc(p.name)}">`:`<div class="product-photo" style="display:grid;place-items:center;color:#9b8876;font-size:28px">▧</div>`}<div class="label" style="margin-top:10px">วัสดุ / อุปกรณ์</div><b>${esc(p.name)}</b><div class="hint" style="min-height:30px;margin-top:3px">${esc(p.description||'ไม่มีรายละเอียด')}</div><div class="value" style="font-size:21px">${p.qty} <span class="hint">${esc(p.unit)}</span></div><div class="hint" style="display:grid;gap:3px;margin-top:7px"><span>ต้นทุนต่อหน่วย: <b>${fmt(p.cost||0)}</b></span><span>ราคาขายต่อหน่วย: <b>${fmt(p.salePrice||0)}</b></span></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn secondary" style="padding:6px 9px" onclick="editStock(${i})">แก้ไขสินค้า</button><button class="btn secondary" style="padding:6px 9px" onclick="adjustStock(${i})">ปรับจำนวน</button></div></div>`).join('')}
 let saleLines=[];
+
+function formatMonthLabel(month){
+ const [y,m]=month.split('-').map(Number);
+ return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(new Date(y,m-1,1));
+}
+function renderDistribution(){
+ const month=$('distMonth');if(!month)return;
+ if(!month.value)month.value=iso(today).slice(0,7);
+ const key=month.value, data=monthProfitData(key),done=distributions.find(d=>d.month===key);
+ $('distMonthLabel').textContent=formatMonthLabel(key);
+ $('distProfit').textContent=fmt(data.profit);
+ $('distRevenue').textContent=fmt(data.revenue);
+ $('distOperating').textContent=fmt(data.operating);
+ $('distCogs').textContent=fmt(data.cogs);
+ const withdrawal=done?Number(done.withdrawal):Math.max(0,Math.round(data.profit*.30*100)/100);
+ const retained=done?Number(done.retained):Math.max(0,Math.round((data.profit-withdrawal)*100)/100);
+ $('distWithdraw').textContent=fmt(withdrawal);
+ $('distRetained').textContent=fmt(retained);
+ $('distributionStatus').textContent=done?'ตัดยอดแล้ว':'รอตัดยอด';
+ $('distributionStatus').className='status '+(done?'done':'pending');
+ const btn=$('cutProfitButton');btn.disabled=!!done||data.profit<=0;
+ btn.textContent=done?'ตัดยอดเรียบร้อยแล้ว':data.profit<=0?'ยังไม่มีกำไรสำหรับแบ่ง':'ตัดยอดกำไรประจำเดือน';
+ $('totalWithdrawn').textContent=fmt(distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0));
+ $('totalRetained').textContent=fmt(distributions.reduce((n,d)=>n+Number(d.retained||0),0));
+ const pending=entries.map(x=>monthKey(x.date)).filter((v,i,a)=>v&&!distributions.some(d=>d.month===v)&&a.indexOf(v)===i)
+  .reduce((n,m)=>n+Math.max(0,monthProfitData(m).profit),0);
+ $('totalPending').textContent=fmt(pending);
+ const rows=distributions.slice().sort((a,b)=>b.month.localeCompare(a.month));
+ $('distributionRows').innerHTML=rows.map(d=>`<tr><td>${esc(formatMonthLabel(d.month))}</td><td><b>${fmt(d.profit)}</b></td><td class="red"><b>${fmt(d.withdrawal)}</b></td><td class="green"><b>${fmt(d.retained)}</b></td><td>${d.cutAt?thdate(d.cutAt.slice(0,10)):'-'}</td><td><span class="status done">ตัดยอดแล้ว</span></td></tr>`).join('')||'<tr><td colspan="6" class="empty">ยังไม่มีประวัติการแบ่งกำไร</td></tr>';
+}
+function cutMonthlyProfit(){
+ const month=$('distMonth').value;
+ if(!month){alert('กรุณาเลือกเดือน');return}
+ if(distributions.some(d=>d.month===month)){alert('เดือนนี้ตัดยอดไปแล้ว ไม่สามารถตัดซ้ำได้');return}
+ const data=monthProfitData(month);
+ if(!(data.profit>0)){alert('เดือนนี้ไม่มีกำไรสุทธิเป็นบวก จึงยังแบ่งกำไรไม่ได้');return}
+ const withdrawal=Math.round(data.profit*.30*100)/100;
+ const retained=Math.round((data.profit-withdrawal)*100)/100;
+ const message=`ยืนยันตัดยอดกำไร ${formatMonthLabel(month)}?\\n\\nกำไรสุทธิ: ${fmt(data.profit)}\\nถอนออก 30%: ${fmt(withdrawal)}\\nเก็บเป็นทุน 70%: ${fmt(retained)}\\n\\nยอดถอนจะถูกหักจากเงินคงเหลือในธุรกิจ`;
+ if(!confirm(message))return;
+ distributions.push({id:'dist_'+month,month,profit:data.profit,revenue:data.revenue,operating:data.operating,cogs:data.cogs,withdrawal,retained,cutAt:new Date().toISOString()});
+ save();render();
+ alert('บันทึกการตัดยอดกำไรเรียบร้อยแล้ว');
+}
+function shiftDistributionMonth(n){
+ const el=$('distMonth'),[y,m]=el.value.split('-').map(Number),d=new Date(y,m-1+n,1);
+ el.value=d.getFullYear()+'-'+pad(d.getMonth()+1);renderDistribution();
+}
+
 // Close and clean up the shared entry modal (income, expense, and stock).
 function closeModal(){
  const modal=$('modal');
@@ -301,21 +536,30 @@ $('entryForm').onsubmit=async e=>{
 };
 function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
 function adjustAccountBalance(){
- const current=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')+accountBalanceAdjustment;
+ const withdrawn=distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0);
+ const current=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn+accountBalanceAdjustment;
  const entered=prompt('กรอกยอดเงินจริงที่มีอยู่ในบัญชีตอนนี้ (บาท)',String(Number(current.toFixed(2))));
  if(entered===null||entered.trim()===''||!Number.isFinite(Number(entered))||Number(entered)<0){if(entered!==null)alert('กรุณากรอกยอดเงินเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
  const target=Number(entered);
- accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense'))).toFixed(2));
+ accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn)).toFixed(2));
  save();render();
 }
 function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
-function exportData(){let blob=new Blob([JSON.stringify({entries,products,accountBalanceAdjustment},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='atelier-backup.json';a.click();URL.revokeObjectURL(a.href)}
-$('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries)||!Array.isArray(d.products))throw 0;entries=d.entries;products=d.products;if(d.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(d.accountBalanceAdjustment)||0;save();render();alert('นำเข้าข้อมูลเรียบร้อย')}catch{alert('ไฟล์สำรองไม่ถูกต้อง')}};r.readAsText(f)};
+function exportData(){let blob=new Blob([JSON.stringify({entries,products,accountBalanceAdjustment,expenseCategories,distributions},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='atelier-backup.json';a.click();URL.revokeObjectURL(a.href)}
+$('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries)||!Array.isArray(d.products))throw 0;entries=d.entries;products=d.products;if(d.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(d.accountBalanceAdjustment)||0;
+ if(Array.isArray(d.expenseCategories))expenseCategories=d.expenseCategories;
+ if(Array.isArray(d.distributions))distributions=d.distributions;
+ save();render();alert('นำเข้าข้อมูลเรียบร้อย')}catch{alert('ไฟล์สำรองไม่ถูกต้อง')}};r.readAsText(f)};
 if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('atelier_dark',document.body.classList.contains('dark'))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 for(let t of ['income','expense']){$(t+'DateFilter').onchange=()=>renderTables(t);let sel=$(t+'MonthFilter');for(let i=0;i<12;i++){let v=today.getFullYear()+'-'+pad(i+1);sel.add(new Option(new Intl.DateTimeFormat('th-TH',{month:'long'}).format(new Date(today.getFullYear(),i,1)),v))}sel.onchange=()=>renderTables(t)}
-function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');render();
+function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
+$('distMonth').value=iso(today).slice(0,7);
+$('distMonth').onchange=renderDistribution;
+$('distPrev').onclick=()=>shiftDistributionMonth(-1);
+$('distNext').onclick=()=>shiftDistributionMonth(1);
+render();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script></body></html>
