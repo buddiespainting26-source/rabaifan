@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atelier-manager-v1';
+const CACHE_NAME = 'atelier-manager-v2';
 const APP_SHELL = [
   './',
   './index.html',
