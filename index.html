@@ -139,6 +139,11 @@ let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categorie
 if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
 let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
 let distributions=JSON.parse(localStorage.getItem('atelier_distributions')||'[]');
+// Separate balances are used only when the user manually adjusts the account balance.
+let savedCashBalance=localStorage.getItem('atelier_balance_cash');
+let savedTransferBalance=localStorage.getItem('atelier_balance_transfer');
+let accountBalanceCash=savedCashBalance===null||savedCashBalance===''?null:Number(savedCashBalance);
+let accountBalanceTransfer=savedTransferBalance===null||savedTransferBalance===''?null:Number(savedTransferBalance);
 let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null;
 function save(){
  // Save all records locally as one guarded operation. If storage is full,
@@ -148,6 +153,8 @@ function save(){
   atelier_products:JSON.stringify(products),
   atelier_expense_categories:JSON.stringify(expenseCategories),
   atelier_balance_adjustment:String(accountBalanceAdjustment),
+  atelier_balance_cash:accountBalanceCash===null?'':String(accountBalanceCash),
+  atelier_balance_transfer:accountBalanceTransfer===null?'':String(accountBalanceTransfer),
   atelier_distributions:JSON.stringify(distributions)
  };
  const previous={};
@@ -484,12 +491,21 @@ $('entryForm').onsubmit=async e=>{
 function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
 function adjustAccountBalance(){
  const withdrawn=distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0);
- const current=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn+accountBalanceAdjustment;
- const entered=prompt('กรอกยอดเงินจริงที่มีอยู่ในบัญชีตอนนี้ (บาท)',String(Number(current.toFixed(2))));
- if(entered===null||entered.trim()===''||!Number.isFinite(Number(entered))||Number(entered)<0){if(entered!==null)alert('กรุณากรอกยอดเงินเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
- const target=Number(entered);
- accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn)).toFixed(2));
+ const ledgerBalance=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn;
+ const currentTotal=ledgerBalance+accountBalanceAdjustment;
+ const defaultCash=accountBalanceCash===null?Math.max(0,currentTotal):accountBalanceCash;
+ const defaultTransfer=accountBalanceTransfer===null?0:accountBalanceTransfer;
+ const cashInput=prompt('กรอกยอดเงินจริงที่มีอยู่ในร้าน (เงินสด) บาท',String(Number(defaultCash.toFixed(2))));
+ if(cashInput===null)return;
+ if(cashInput.trim()===''||!Number.isFinite(Number(cashInput))||Number(cashInput)<0){alert('กรุณากรอกยอดเงินสดเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
+ const transferInput=prompt('กรอกยอดเงินจริงในบัญชีธนาคาร (เงินโอน) บาท',String(Number(defaultTransfer.toFixed(2))));
+ if(transferInput===null)return;
+ if(transferInput.trim()===''||!Number.isFinite(Number(transferInput))||Number(transferInput)<0){alert('กรุณากรอกยอดเงินโอนเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
+ accountBalanceCash=Number(Number(cashInput).toFixed(2));
+ accountBalanceTransfer=Number(Number(transferInput).toFixed(2));
+ accountBalanceAdjustment=Number((accountBalanceCash+accountBalanceTransfer-ledgerBalance).toFixed(2));
  save();render();
+ alert('ปรับยอดเงินเรียบร้อย\nเงินสด: '+fmt(accountBalanceCash)+'\nเงินโอน: '+fmt(accountBalanceTransfer)+'\nรวมทั้งหมด: '+fmt(accountBalanceCash+accountBalanceTransfer));
 }
 function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
@@ -499,7 +515,7 @@ function exportData(){
   backupFormat:'atelier-manager-backup',
   backupVersion:1,
   exportedAt:new Date().toISOString(),
-  entries,products,accountBalanceAdjustment,expenseCategories,distributions
+  entries,products,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,expenseCategories,distributions
  };
  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
  const url=URL.createObjectURL(blob);
@@ -520,6 +536,8 @@ function validateBackupData(d){
  if(d.expenseCategories!==undefined && !Array.isArray(d.expenseCategories)) throw new Error('รูปแบบหมวดหมู่รายจ่ายไม่ถูกต้อง');
  if(d.distributions!==undefined && !Array.isArray(d.distributions)) throw new Error('รูปแบบประวัติแบ่งกำไรไม่ถูกต้อง');
  if(d.accountBalanceAdjustment!==undefined && !Number.isFinite(Number(d.accountBalanceAdjustment))) throw new Error('ยอดปรับปรุงเงินในบัญชีไม่ถูกต้อง');
+ if(d.accountBalanceCash!==undefined && d.accountBalanceCash!==null && !Number.isFinite(Number(d.accountBalanceCash))) throw new Error('ยอดเงินสดที่ปรับบัญชีไม่ถูกต้อง');
+ if(d.accountBalanceTransfer!==undefined && d.accountBalanceTransfer!==null && !Number.isFinite(Number(d.accountBalanceTransfer))) throw new Error('ยอดเงินโอนที่ปรับบัญชีไม่ถูกต้อง');
 }
 $('importFile').onchange=e=>{
  const f=e.target.files && e.target.files[0];
@@ -534,16 +552,18 @@ $('importFile').onchange=e=>{
    entries:d.entries,
    products:d.products.map((p,i)=>({...p,id:p.id||('p'+i+'_'+String(p.name||'product')),description:p.description==null?'':p.description,image:p.image==null?'':p.image,unit:p.unit==null?'ชิ้น':p.unit,cost:p.cost==null?0:p.cost,salePrice:p.salePrice==null?0:p.salePrice})),
    accountBalanceAdjustment:d.accountBalanceAdjustment===undefined?0:Number(d.accountBalanceAdjustment)||0,
+   accountBalanceCash:d.accountBalanceCash===undefined||d.accountBalanceCash===null?null:Number(d.accountBalanceCash)||0,
+   accountBalanceTransfer:d.accountBalanceTransfer===undefined||d.accountBalanceTransfer===null?null:Number(d.accountBalanceTransfer)||0,
    expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด'],
    distributions:Array.isArray(d.distributions)?d.distributions:[]
   };
   if(!next.expenseCategories.includes('สินค้า'))next.expenseCategories.push('สินค้า');
-  const previous={entries,products,accountBalanceAdjustment,expenseCategories,distributions};
+  const previous={entries,products,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,expenseCategories,distributions};
   try{
-   entries=next.entries;products=next.products;accountBalanceAdjustment=next.accountBalanceAdjustment;expenseCategories=next.expenseCategories;distributions=next.distributions;
+   entries=next.entries;products=next.products;accountBalanceAdjustment=next.accountBalanceAdjustment;accountBalanceCash=next.accountBalanceCash;accountBalanceTransfer=next.accountBalanceTransfer;expenseCategories=next.expenseCategories;distributions=next.distributions;
    save();
   }catch(err){
-   entries=previous.entries;products=previous.products;accountBalanceAdjustment=previous.accountBalanceAdjustment;expenseCategories=previous.expenseCategories;distributions=previous.distributions;
+   entries=previous.entries;products=previous.products;accountBalanceAdjustment=previous.accountBalanceAdjustment;accountBalanceCash=previous.accountBalanceCash;accountBalanceTransfer=previous.accountBalanceTransfer;expenseCategories=previous.expenseCategories;distributions=previous.distributions;
    const reason=err&&err.name==='QuotaExceededError'?'พื้นที่จัดเก็บในเบราว์เซอร์ไม่เพียงพอ ข้อมูลเดิมยังคงอยู่ กรุณาลดขนาดรูปภาพหรือเคลียร์พื้นที่ก่อนลองใหม่':(err&&err.message?err.message:'เกิดข้อผิดพลาดขณะบันทึกข้อมูล');
    alert('นำเข้าข้อมูลไม่สำเร็จ: '+reason);e.target.value='';return;
   }
