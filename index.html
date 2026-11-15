@@ -41,7 +41,7 @@ body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b
 .profit-detail small{display:block;color:var(--muted);font-size:10px}
 .profit-detail b{display:block;margin-top:5px;font:700 14px Manrope}
 @media(max-width:520px){.split-grid{grid-template-columns:1fr 1fr}.profit-amount{font-size:25px}.profit-details{grid-template-columns:1fr}}
-body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background:#493a2e}
+body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background:#493a2e}body.dark .balance{background:#493a2e;color:#fff7eb}body.dark .balance .value{color:#fff7eb}body.dark .balance .label,body.dark .balance .hint{color:#e0cdb8}.date-nav{display:flex;align-items:center;gap:5px}.date-nav button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:9px;width:34px;height:35px;font-size:18px}.date-nav input{min-width:145px}
 
 </style></head>
 <body>
@@ -77,11 +77,11 @@ body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background
 </section>
 <section class="page" id="income"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายรับวันนี้</div><div class="value" id="incomeToday">฿0</div></div><div class="card metric"><div class="label">รายรับเดือนนี้</div><div class="value" id="incomeMonth">฿0</div></div><div class="card metric"><div class="label">รายรับปีนี้</div><div class="value" id="incomeYear">฿0</div></div></div>
  <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการขาย / รายรับ / เงินลงทุน</h2><div class="hint">บันทึกยอดขายและเงินส่วนตัวที่นำมาลงทุนเพิ่มในธุรกิจ</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="openModal('capital')">＋ ลงทุนเพิ่ม</button><button class="btn" onclick="openModal('income')">＋ เพิ่มรายรับ</button></div></div>
- <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="incomeDateFilter"><select id="incomeMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('income')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลา</th><th>สินค้าที่ขาย</th><th>จำนวนรวม</th><th>ยอดรายรับ</th><th></th></tr></thead><tbody id="incomeRows"></tbody></table></div></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><div class="date-nav"><button type="button" onclick="shiftDateFilter('income',-1)" aria-label="วันก่อนหน้า">‹</button><input type="date" id="incomeDateFilter"><button type="button" onclick="shiftDateFilter('income',1)" aria-label="วันถัดไป">›</button></div><select id="incomeMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('income')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลา</th><th>สินค้าที่ขาย</th><th>จำนวนรวม</th><th>ยอดรายรับ</th><th></th></tr></thead><tbody id="incomeRows"></tbody></table></div></div>
 </section>
 <section class="page" id="expense"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายจ่ายวันนี้</div><div class="value" id="expenseToday">฿0</div></div><div class="card metric"><div class="label">รายจ่ายเดือนนี้</div><div class="value" id="expenseMonth">฿0</div></div><div class="card metric"><div class="label">รายจ่ายปีนี้</div><div class="value" id="expenseYear">฿0</div></div></div>
  <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการรายจ่าย</h2><div class="hint">บันทึกค่าใช้จ่ายประจำวันของเวิร์กช็อป</div></div><button class="btn" onclick="openModal('expense')">＋ เพิ่มรายจ่าย</button></div>
- <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="expenseDateFilter"><select id="expenseMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><div class="date-nav"><button type="button" onclick="shiftDateFilter('expense',-1)" aria-label="วันก่อนหน้า">‹</button><input type="date" id="expenseDateFilter"><button type="button" onclick="shiftDateFilter('expense',1)" aria-label="วันถัดไป">›</button></div><select id="expenseMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
 </section>
 <section class="page" id="stock"><div class="toolbar"><div><h2 style="margin:0;font-size:17px">คลังสินค้าและวัสดุ</h2><div class="hint">ตัวอย่างรายการอุปกรณ์สำหรับเวิร์กช็อปเพ้นติ้ง</div></div><button class="btn" onclick="openModal('stock')">＋ เพิ่มสินค้า</button></div><div class="stock-grid" id="stockGrid"></div><div class="card panel" style="margin-top:15px"><h2 style="font-size:15px;margin:0 0 12px">ประวัติการเคลื่อนไหว</h2><div class="hint">รายการรับเข้าและเบิกใช้จะแสดงในส่วนนี้เมื่อมีการพัฒนาระบบสต็อกเต็มรูปแบบ</div></div></section>
 
@@ -139,7 +139,7 @@ let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categorie
 if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
 let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
 let distributions=JSON.parse(localStorage.getItem('atelier_distributions')||'[]');
-let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null;
+let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null,editingEntryId=null;
 const DB_NAME='atelier_manager_db',DB_VERSION=1,DB_STORE='app_state';
 let dbPromise=null,saveQueue=Promise.resolve();
 function openAtelierDB(){
@@ -417,14 +417,33 @@ $('entryForm').onsubmit=async e=>{
  try{
   const f=Object.fromEntries(new FormData(form));
   // Validate the selected date explicitly. A past date is allowed; only an empty/invalid date is rejected.
-  if(activeType==='income'||activeType==='capital'||activeType==='expense'){
+  if(activeType==='income'||activeType==='capital'||activeType==='expense'||activeType==='editIncome'||activeType==='editOther'){
    if(!/^\d{4}-\d{2}-\d{2}$/.test(f.date||'')){
     alert('กรุณาเลือกวันที่ให้ถูกต้อง');
     const dateField=form.elements.date;if(dateField)dateField.focus();
     return;
    }
   }
-  if(activeType==='capital'){
+  if(activeType==='editIncome'){
+   const original=entries.find(x=>x.id===editingEntryId);if(!original)throw new Error('ไม่พบรายการขายที่ต้องการแก้ไข');
+   const oldItems=original.items||[];const updated=[];
+   for(let i=0;i<oldItems.length;i++){
+    const old=oldItems[i],qty=Number(f['qty_'+i]),price=Number(f['price_'+i]);
+    if(!Number.isInteger(qty)||qty<1||!Number.isFinite(price)||price<0){alert('กรุณาตรวจสอบจำนวนชิ้นและราคาขาย');return}
+    const product=products.find(p=>p.id===old.productId),oldQty=Number(old.qty)||0,delta=qty-oldQty;
+    if(product&&delta>0&&Number(product.qty)<delta){alert('สต็อกสินค้าไม่เพียงพอสำหรับเพิ่มจำนวนขาย: '+(old.name||product.name));return}
+    updated.push({...old,qty,price,lineTotal:Number((qty*price).toFixed(2)),unitCost:Number(f['unitCost_'+i])||Number(old.unitCost)||0,costTotal:Number(((Number(f['unitCost_'+i])||Number(old.unitCost)||0)*qty).toFixed(2))});
+   }
+   // Keep stock accurate when quantity changes; the custom sale price never changes the stock price.
+   updated.forEach((it,i)=>{const product=products.find(p=>p.id===it.productId);if(product){const delta=it.qty-(Number(oldItems[i].qty)||0);product.qty=Math.max(0,(Number(product.qty)||0)-delta)}});
+   original.items=updated;original.date=f.date;original.customerType=f.customerType||original.customerType;
+   original.amount=Number(updated.reduce((n,it)=>n+Number(it.lineTotal||0),0).toFixed(2));
+   original.qty=updated.reduce((n,it)=>n+Number(it.qty||0),0);original.title=updated.map(it=>it.name).join(', ');
+  }else if(activeType==='editOther'){
+   const original=entries.find(x=>x.id===editingEntryId);if(!original)throw new Error('ไม่พบรายการที่ต้องการแก้ไข');
+   const amount=Number(f.amount);if(!Number.isFinite(amount)||amount<0){alert('จำนวนเงินไม่ถูกต้อง');return}
+   original.date=f.date;original.amount=amount;if(f.note!==undefined){if(original.type==='capital')original.note=f.note;else original.title=f.note}
+  }else if(activeType==='capital'){
    const amount=Number(f.amount);
    if(!(amount>0)){alert('กรุณาระบุจำนวนเงินลงทุนให้มากกว่า 0');return}
    entries.push({id:Date.now().toString(),type:'capital',date:f.date,amount,note:(f.note||'').trim(),title:'เงินลงทุนเพิ่ม'});
@@ -477,7 +496,7 @@ $('entryForm').onsubmit=async e=>{
     entries.push({id:Date.now().toString(),type:'expense',date:f.date,category,title:f.title,amount});
    }
   }else entries.push({id:Date.now().toString(),type:activeType,...f,amount:Number(f.amount),qty:Number(f.qty||1)});
-  save();
+  await save();
   closeModal();
   render();
  }catch(err){
@@ -487,30 +506,24 @@ $('entryForm').onsubmit=async e=>{
   alert(storageFull?'พื้นที่จัดเก็บของเบราว์เซอร์เต็ม ระบบจึงยกเลิกรายการนี้และคืนข้อมูลเดิมให้แล้ว กรุณาส่งออกข้อมูลสำรองก่อน แล้วค่อยจัดการรูปภาพสินค้าที่มีขนาดใหญ่':'บันทึกรายการไม่สำเร็จ: '+(err?.message||'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'));
  }finally{
   form.dataset.submitting='false';
-  if(submitButton){submitButton.disabled=false;submitButton.textContent=editingStockIndex!==null?'บันทึกการแก้ไข':'บันทึกรายการ'}
+  if(submitButton){submitButton.disabled=false;submitButton.textContent=(editingStockIndex!==null||activeType==='editIncome'||activeType==='editOther')?'บันทึกการแก้ไข':'บันทึกรายการ'}
  }
 };
 function editEntry(id){
  const x=entries.find(v=>v.id===id);if(!x)return;
- const newDate=prompt('แก้ไขวันที่ (YYYY-MM-DD)',x.date||'');if(newDate===null)return;
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(newDate)){alert('รูปแบบวันที่ไม่ถูกต้อง');return}
- const amountText=prompt('แก้ไขจำนวนเงิน (บาท)',String(Number(x.amount)||0));if(amountText===null)return;
- const amount=Number(amountText);if(!Number.isFinite(amount)||amount<0){alert('จำนวนเงินไม่ถูกต้อง');return}
  if(x.type==='income'){
-  const oldAmount=Number(x.amount)||0,ratio=oldAmount>0?amount/oldAmount:0;
-  (x.items||[]).forEach(it=>{it.lineTotal=Number(((Number(it.lineTotal!=null?it.lineTotal:(Number(it.price)||0)*(Number(it.qty)||0)))*ratio).toFixed(2))});
-  x.amount=amount;
- }else if(x.type==='expense'){
-  if(x.category!=='สินค้า'){
-   const title=prompt('แก้ไขรายละเอียดรายจ่าย',x.title||'');if(title===null)return;x.title=title;
-   const category=prompt('แก้ไขหมวดหมู่รายจ่าย',x.category||'เบ็ดเตล็ด');if(category===null)return;
-   if(category.trim())x.category=category.trim();
-  }else alert('รายการซื้อสินค้าแก้ไขได้เฉพาะวันที่และยอดเงิน เพื่อป้องกันยอดสต็อกคลาดเคลื่อน');
-  x.amount=amount;
- }else if(x.type==='capital'){
-  const note=prompt('แก้ไขหมายเหตุ',x.note||'');if(note===null)return;x.note=note;x.amount=amount;
- }else x.amount=amount;
- x.date=newDate;save().then(render).catch(()=>{});
+  editingEntryId=id;activeType='editIncome';editingStockIndex=null;
+  $('modalTitle').textContent='แก้ไขรายการขาย';
+  const items=x.items&&x.items.length?x.items:[{name:x.title||'รายการขาย',qty:x.qty||1,price:Number(x.amount)||0,lineTotal:Number(x.amount)||0,unitCost:0,costTotal:0}];
+  $('formFields').innerHTML=`<div class="field"><label>วันที่ขาย</label><input name="date" type="date" value="${esc(x.date||iso(today))}" required></div><div class="field"><label>ประเภทลูกค้า</label><select name="customerType"><option value="เด็ก" ${x.customerType==='เด็ก'?'selected':''}>เด็ก</option><option value="คู่รัก" ${x.customerType==='คู่รัก'?'selected':''}>คู่รัก</option><option value="ผู้ใหญ่" ${x.customerType==='ผู้ใหญ่'?'selected':''}>ผู้ใหญ่</option><option value="วัยรุ่น" ${x.customerType==='วัยรุ่น'?'selected':''}>วัยรุ่น</option></select></div><div style="grid-column:1/-1"><b style="font-size:12px">แก้ไขสินค้า จำนวน และราคาขายเฉพาะรายการนี้</b><p class="hint">ราคาที่แก้ไขจะไม่เปลี่ยนราคาขายในหน้าสต็อก</p></div>${items.map((it,i)=>`<div style="grid-column:1/-1;border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) 90px 110px;gap:9px;align-items:end"><div><b style="font-size:12px">${esc(it.name||'สินค้า')}</b><div class="hint">ราคาปกติจากสต็อก: ${fmt(products.find(p=>p.id===it.productId)?.salePrice||it.price||0)}</div><input type="hidden" name="productId_${i}" value="${esc(it.productId||'')}"><input type="hidden" name="itemName_${i}" value="${esc(it.name||'สินค้า')}"><input type="hidden" name="unitCost_${i}" value="${Number(it.unitCost)||0}"></div><div class="field"><label>จำนวน (ชิ้น)</label><input name="qty_${i}" type="number" min="1" step="1" value="${Math.max(1,Number(it.qty)||1)}" required></div><div class="field"><label>ราคาต่อชิ้น (บาท)</label><input name="price_${i}" type="number" min="0" step=".01" value="${Number(it.price!=null?it.price:(Number(it.lineTotal)||0)/(Number(it.qty)||1))}" required></div></div>`).join('')}<div style="grid-column:1/-1;background:var(--paper2);padding:12px;border-radius:10px" class="hint">ยอดรวมใหม่จะคำนวณจากจำนวน × ราคาที่แก้ไข</div>`;
+  const submit=$('entryForm').querySelector('button[type="submit"]');if(submit)submit.textContent='บันทึกการแก้ไข';
+  $('modal').classList.add('show');return;
+ }
+ // Other record types retain date/amount editing through a dedicated compact form.
+ editingEntryId=id;activeType='editOther';
+ $('modalTitle').textContent='แก้ไขรายการ';
+ $('formFields').innerHTML=`<div class="field"><label>วันที่</label><input name="date" type="date" value="${esc(x.date||iso(today))}" required></div><div class="field"><label>จำนวนเงิน (บาท)</label><input name="amount" type="number" min="0" step=".01" value="${Number(x.amount)||0}" required></div><div class="field" style="grid-column:1/-1"><label>รายละเอียด</label><input name="note" value="${esc(x.title||x.note||'')}"></div>`;
+ const submit=$('entryForm').querySelector('button[type="submit"]');if(submit)submit.textContent='บันทึกการแก้ไข';$('modal').classList.add('show');
 }
 function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
 function adjustAccountBalance(){
@@ -522,6 +535,7 @@ function adjustAccountBalance(){
  accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn)).toFixed(2));
  save();render();
 }
+function shiftDateFilter(type,delta){const el=$(type+'DateFilter');const base=el.value?new Date(el.value+'T12:00:00'):new Date();base.setDate(base.getDate()+delta);el.value=iso(base);$(type+'MonthFilter').value='';renderTables(type)}
 function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
 function exportData(){
