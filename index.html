@@ -43,6 +43,31 @@ body.dark{--bg:#211b17;--paper:#2d241e;--paper2:#3b3027;--ink:#f3e9dc;--muted:#b
 @media(max-width:520px){.split-grid{grid-template-columns:1fr 1fr}.profit-amount{font-size:25px}.profit-details{grid-template-columns:1fr}}
 body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background:#493a2e}body.dark .balance{background:#493a2e;color:#fff7eb}body.dark .balance .value{color:#fff7eb}body.dark .balance .label,body.dark .balance .hint{color:#e0cdb8}.date-nav{display:flex;align-items:center;gap:5px}.date-nav button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:9px;width:34px;height:35px;font-size:18px}.date-nav input{min-width:145px}
 
+
+/* Dark-mode contrast fixes for forms and modal actions */
+body.dark .btn{background:#d8c2a8;color:#2b211a;border:1px solid #d8c2a8}
+body.dark .btn:hover{background:#ead8c2;color:#241a14}
+body.dark .btn:disabled{background:#665647;color:#d9c9b7;border-color:#665647;opacity:1}
+body.dark .btn.secondary{background:#493a2e;color:#f3e9dc;border:1px solid #665344}
+body.dark .btn.secondary:hover{background:#5a4738;color:#fff7eb}
+body.dark .modal-box{background:#302720;color:#f3e9dc;border:1px solid #594839}
+body.dark .modal-head h3,body.dark .modal-box b,body.dark .modal-box strong{color:#f7ecdf}
+body.dark .field label,body.dark .modal-box .hint{color:#c5b19d}
+body.dark .field input,body.dark .field select,body.dark .field textarea,
+body.dark #saleLines input,body.dark #saleLines select{
+ background:#211b17;color:#f3e9dc;border-color:#665344;color-scheme:dark
+}
+body.dark .field input::placeholder,body.dark .field textarea::placeholder{color:#a99581}
+body.dark .close{background:#594638;color:#fff4e6;border:1px solid #765d49}
+body.dark .sale-product-preview{background:#403329;color:#f3e9dc}
+body.dark .sale-product-preview small{color:#d1bda8!important}
+body.dark .sale-line-card{background:#382d25;border-color:#665344!important}
+body.dark .sale-line-total{color:#e4c9a8!important}
+body.dark .product-picker-panel{background:#302720;color:#f3e9dc;border:1px solid #594839}
+body.dark .product-picker-card{background:#211b17;color:#f3e9dc;border-color:#665344}
+body.dark .product-picker-card:hover{background:#493a2e;border-color:#b99a78}
+body.dark .product-picker-card .picker-meta{color:#c5b19d}
+
 </style></head>
 <body>
 
@@ -402,10 +427,59 @@ function editStock(i){
 function addSaleLine(){const available=products.filter(p=>Number(p.qty)>0);if(!available.length){alert('ไม่มีสินค้าในสต็อก กรุณาเพิ่มสินค้าเข้าคลังก่อน');return}saleLines.push({productId:available[0].id,qty:1});renderSaleLines()}
 function renderSaleLines(){
  const host=$('saleLines');if(!host)return;
- host.innerHTML=saleLines.map((line,i)=>{const p=products.find(x=>x.id===line.productId)||products[0];const opts=products.filter(x=>Number(x.qty)>0||x.id===line.productId).map(x=>`<option value="${esc(x.id)}" ${x.id===line.productId?'selected':''}>${esc(x.name)} · คงเหลือ ${x.qty} ${esc(x.unit||'ชิ้น')}</option>`).join('');const price=Number(p?.salePrice||0),total=price*Number(line.qty||0);
- return `<div style="border:1px solid #e7dccb;border-radius:12px;padding:10px;display:grid;grid-template-columns:minmax(0,1fr) 82px 28px;gap:8px;align-items:end"><div class="field"><label>สินค้า</label><select onchange="changeSaleProduct(${i},this.value)">${opts}</select><div class="sale-product-preview">${p?.image?`<img src="${p.image}" alt="${esc(p.name)}">`:`<div class="no-photo">▧</div>`}<div><b style="font-size:11px">${esc(p?.name||'')}</b><small style="display:block;color:#8c7867">ราคาขาย ${fmt(price)} / ${esc(p?.unit||'ชิ้น')}<br>คงเหลือ ${p?.qty??0} ${esc(p?.unit||'ชิ้น')}</small></div></div></div><div class="field"><label>จำนวน</label><input type="number" min="1" max="${p?.qty??1}" value="${line.qty}" onchange="changeSaleQty(${i},this.value)"></div><button type="button" class="close" title="ลบรายการ" onclick="removeSaleLine(${i})">×</button><div style="grid-column:1/-1;text-align:right;font:700 12px Manrope;color:#76583f">รวม ${fmt(total)}</div></div>`;
+ host.innerHTML=saleLines.map((line,i)=>{
+  const p=products.find(x=>x.id===line.productId)||products[0];
+  const price=Number(p?.salePrice||0),total=price*Number(line.qty||0);
+  return `<div class="sale-line-card" style="border:1px solid #e7dccb;border-radius:12px;padding:10px;display:grid;grid-template-columns:minmax(0,1fr) 82px 28px;gap:8px;align-items:end">
+   <div class="field"><label>สินค้า</label>
+    <button type="button" class="product-picker-trigger" onclick="openProductPicker(${i})" style="width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:8px;min-width:0">
+     ${p?.image?`<img src="${p.image}" alt="${esc(p.name)}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex:0 0 48px">`:`<span class="no-photo" style="width:48px;height:48px;flex:0 0 48px">▧</span>`}
+     <span style="min-width:0;flex:1"><b style="display:block;font-size:11px;overflow-wrap:anywhere">${esc(p?.name||'')}</b><small class="picker-meta" style="display:block;color:#8c7867">ราคาขาย ${fmt(price)} / ${esc(p?.unit||'ชิ้น')} · คงเหลือ ${p?.qty??0}</small></span>
+     <span aria-hidden="true">⌄</span>
+    </button>
+   </div>
+   <div class="field"><label>จำนวน</label><input type="number" min="1" max="${p?.qty??1}" value="${line.qty}" onchange="changeSaleQty(${i},this.value)"></div>
+   <button type="button" class="close" title="ลบรายการ" onclick="removeSaleLine(${i})">×</button>
+   <div class="sale-line-total" style="grid-column:1/-1;text-align:right;font:700 12px Manrope;color:#76583f">รวม ${fmt(total)}</div>
+  </div>`;
  }).join('');
  $('saleTotal').textContent=fmt(saleLines.reduce((sum,line)=>{let p=products.find(x=>x.id===line.productId);return sum+(p?Number(p.salePrice||0)*Number(line.qty||0):0)},0));
+}
+function openProductPicker(lineIndex){
+ const existing=$('productPickerModal');
+ if(existing)existing.remove();
+ const modal=document.createElement('div');
+ modal.id='productPickerModal';
+ modal.className='modal show';
+ modal.style.zIndex='40';
+ modal.innerHTML=`<div class="modal-box product-picker-panel" style="width:min(680px,100%);display:flex;flex-direction:column;max-height:88vh">
+  <div class="modal-head"><div><h3 style="margin:0">เลือกสินค้า</h3><small class="hint">แตะสินค้าที่ต้องการเพื่อเพิ่มลงในรายการขาย</small></div><button type="button" class="close" onclick="closeProductPicker()">×</button></div>
+  <input id="productPickerSearch" type="search" placeholder="ค้นหาชื่อสินค้า..." style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);margin-bottom:12px">
+  <div id="productPickerGrid" style="overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;min-height:0"></div>
+ </div>`;
+ document.body.appendChild(modal);
+ modal.addEventListener('click',e=>{if(e.target===modal)closeProductPicker()});
+ window.productPickerLineIndex=lineIndex;
+ renderProductPickerCards('');
+ $('productPickerSearch').addEventListener('input',e=>renderProductPickerCards(e.target.value));
+}
+function renderProductPickerCards(query){
+ const host=$('productPickerGrid');if(!host)return;
+ const q=String(query||'').trim().toLocaleLowerCase();
+ const available=products.filter(p=>Number(p.qty)>0&&(p.name||'').toLocaleLowerCase().includes(q));
+ host.innerHTML=available.map(p=>`<button type="button" class="product-picker-card" onclick="selectPickerProduct('${String(p.id).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:9px;text-align:left;display:grid;gap:7px;min-width:0">
+  ${p.image?`<img src="${p.image}" alt="${esc(p.name)}" style="width:100%;height:105px;object-fit:cover;border-radius:8px">`:`<div class="no-photo" style="width:100%;height:105px;border-radius:8px;display:grid;place-items:center">▧</div>`}
+  <b style="font-size:12px;overflow-wrap:anywhere">${esc(p.name)}</b>
+  <span class="picker-meta" style="font-size:10px;color:#8c7867">ราคา ${fmt(p.salePrice||0)} / ${esc(p.unit||'ชิ้น')}<br>คงเหลือ ${Number(p.qty||0)} ${esc(p.unit||'ชิ้น')}</span>
+ </button>`).join('')||'<div class="empty" style="grid-column:1/-1">ไม่พบสินค้าที่มีสต็อก</div>';
+}
+function selectPickerProduct(id){
+ const i=window.productPickerLineIndex;
+ if(Number.isInteger(i)&&saleLines[i])changeSaleProduct(i,id);
+ closeProductPicker();
+}
+function closeProductPicker(){
+ const modal=$('productPickerModal');if(modal)modal.remove();
 }
 function changeSaleProduct(i,id){saleLines[i].productId=id;renderSaleLines()}
 function changeSaleQty(i,v){let p=products.find(x=>x.id===saleLines[i].productId);saleLines[i].qty=Math.max(1,Math.min(Number(p?.qty||1),Number(v)||1));renderSaleLines()}
