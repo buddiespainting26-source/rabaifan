@@ -77,11 +77,11 @@ body.dark .split-box{background:var(--paper)}body.dark .profit-detail{background
 </section>
 <section class="page" id="income"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายรับวันนี้</div><div class="value" id="incomeToday">฿0</div></div><div class="card metric"><div class="label">รายรับเดือนนี้</div><div class="value" id="incomeMonth">฿0</div></div><div class="card metric"><div class="label">รายรับปีนี้</div><div class="value" id="incomeYear">฿0</div></div></div>
  <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการขาย / รายรับ / เงินลงทุน</h2><div class="hint">บันทึกยอดขายและเงินส่วนตัวที่นำมาลงทุนเพิ่มในธุรกิจ</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="openModal('capital')">＋ ลงทุนเพิ่ม</button><button class="btn" onclick="openModal('income')">＋ เพิ่มรายรับ</button></div></div>
- <div class="card panel"><div class="toolbar"><div class="filters"><div class="period-tools"><button class="btn secondary" onclick="moveLedger('income',-1)">‹</button><select id="incomeViewMode" onchange="changeLedgerMode('income')"><option value="day">รายวัน</option><option value="month">รายเดือน</option></select><button class="btn secondary" onclick="moveLedger('income',1)">›</button><button class="btn secondary" onclick="todayLedger('income')">วันนี้</button></div><input type="date" id="incomeDateFilter" aria-label="เลือกวันที่"><input type="month" id="incomeMonthFilter" aria-label="เลือกเดือน"></div><button class="btn secondary" onclick="clearFilter('income')">ล้างตัวกรอง</button></div><div class="hint" id="incomePeriodSummary" style="margin-bottom:10px"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลา</th><th>สินค้าที่ขาย</th><th>จำนวนรวม</th><th>ยอดรายรับ</th><th></th></tr></thead><tbody id="incomeRows"></tbody></table></div></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="incomeDateFilter"><select id="incomeMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('income')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลา</th><th>สินค้าที่ขาย</th><th>จำนวนรวม</th><th>ยอดรายรับ</th><th></th></tr></thead><tbody id="incomeRows"></tbody></table></div></div>
 </section>
 <section class="page" id="expense"><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card metric"><div class="label">รายจ่ายวันนี้</div><div class="value" id="expenseToday">฿0</div></div><div class="card metric"><div class="label">รายจ่ายเดือนนี้</div><div class="value" id="expenseMonth">฿0</div></div><div class="card metric"><div class="label">รายจ่ายปีนี้</div><div class="value" id="expenseYear">฿0</div></div></div>
  <div class="toolbar"><div><h2 style="margin:0;font-size:17px">รายการรายจ่าย</h2><div class="hint">บันทึกค่าใช้จ่ายประจำวันของเวิร์กช็อป</div></div><button class="btn" onclick="openModal('expense')">＋ เพิ่มรายจ่าย</button></div>
- <div class="card panel"><div class="toolbar"><div class="filters"><div class="period-tools"><button class="btn secondary" onclick="moveLedger('expense',-1)">‹</button><select id="expenseViewMode" onchange="changeLedgerMode('expense')"><option value="day">รายวัน</option><option value="month">รายเดือน</option></select><button class="btn secondary" onclick="moveLedger('expense',1)">›</button><button class="btn secondary" onclick="todayLedger('expense')">วันนี้</button></div><input type="date" id="expenseDateFilter" aria-label="เลือกวันที่"><input type="month" id="expenseMonthFilter" aria-label="เลือกเดือน"></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="hint" id="expensePeriodSummary" style="margin-bottom:10px"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+ <div class="card panel"><div class="toolbar"><div class="filters"><input type="date" id="expenseDateFilter"><select id="expenseMonthFilter"><option value="">ทุกเดือน</option></select></div><button class="btn secondary" onclick="clearFilter('expense')">ล้างตัวกรอง</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่</th><th>หมวดหมู่</th><th>รายละเอียด / รายการสินค้า</th><th>จำนวน</th><th>ยอดรายจ่าย</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
 </section>
 <section class="page" id="stock"><div class="toolbar"><div><h2 style="margin:0;font-size:17px">คลังสินค้าและวัสดุ</h2><div class="hint">ตัวอย่างรายการอุปกรณ์สำหรับเวิร์กช็อปเพ้นติ้ง</div></div><button class="btn" onclick="openModal('stock')">＋ เพิ่มสินค้า</button></div><div class="stock-grid" id="stockGrid"></div><div class="card panel" style="margin-top:15px"><h2 style="font-size:15px;margin:0 0 12px">ประวัติการเคลื่อนไหว</h2><div class="hint">รายการรับเข้าและเบิกใช้จะแสดงในส่วนนี้เมื่อมีการพัฒนาระบบสต็อกเต็มรูปแบบ</div></div></section>
 
@@ -139,36 +139,37 @@ let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categorie
 if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
 let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
 let distributions=JSON.parse(localStorage.getItem('atelier_distributions')||'[]');
-// Separate balances are used only when the user manually adjusts the account balance.
-let savedCashBalance=localStorage.getItem('atelier_balance_cash');
-let savedTransferBalance=localStorage.getItem('atelier_balance_transfer');
-let accountBalanceCash=savedCashBalance===null||savedCashBalance===''?null:Number(savedCashBalance);
-let accountBalanceTransfer=savedTransferBalance===null||savedTransferBalance===''?null:Number(savedTransferBalance);
 let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null;
-let ledgerMode={income:'day',expense:'day'};
-function save(){
- // Save all records locally as one guarded operation. If storage is full,
- // restore previous values and leave existing data intact.
- const values={
-  atelier_entries:JSON.stringify(entries),
-  atelier_products:JSON.stringify(products),
-  atelier_expense_categories:JSON.stringify(expenseCategories),
-  atelier_balance_adjustment:String(accountBalanceAdjustment),
-  atelier_balance_cash:accountBalanceCash===null?'':String(accountBalanceCash),
-  atelier_balance_transfer:accountBalanceTransfer===null?'':String(accountBalanceTransfer),
-  atelier_distributions:JSON.stringify(distributions)
- };
- const previous={};
- for(const key of Object.keys(values))previous[key]=localStorage.getItem(key);
+const DB_NAME='atelier_manager_db',DB_VERSION=1,DB_STORE='app_state';
+let dbPromise=null,saveQueue=Promise.resolve();
+function openAtelierDB(){
+ if(!('indexedDB' in window))return Promise.reject(new Error('เบราว์เซอร์นี้ไม่รองรับ IndexedDB'));
+ if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{
+  const req=indexedDB.open(DB_NAME,DB_VERSION);
+  req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE)};
+  req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('เปิดฐานข้อมูลไม่สำเร็จ'));
+ });
+ return dbPromise;
+}
+function idbGet(key){return openAtelierDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly'),r=tx.objectStore(DB_STORE).get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)}))}
+function idbPut(key,value){return openAtelierDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(value,key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('บันทึกฐานข้อมูลไม่สำเร็จ'));tx.onabort=()=>reject(tx.error||new Error('ยกเลิกการบันทึก'))}))}
+function currentState(){return {entries,products,expenseCategories,accountBalanceAdjustment,distributions}}
+async function save(){
+ const snapshot=JSON.parse(JSON.stringify(currentState()));
+ saveQueue=saveQueue.catch(()=>{}).then(()=>idbPut('state',snapshot));
+ try{await saveQueue}catch(err){console.error('Atelier Manager IndexedDB save failed',err);alert('บันทึกข้อมูลไม่สำเร็จ: '+(err?.message||'เกิดข้อผิดพลาด'));throw err}
+}
+async function initializeStorage(){
  try{
-  for(const [key,value] of Object.entries(values))localStorage.setItem(key,value);
- }catch(err){
-  for(const [key,value] of Object.entries(previous)){
-   try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value)}catch(restoreError){console.error('Could not restore local backup for',key,restoreError)}
-  }
-  throw err;
- }
- // All records are stored only in this browser on this device.
+  const stored=await idbGet('state');
+  if(stored&&Array.isArray(stored.entries)&&Array.isArray(stored.products)){
+   entries=stored.entries;products=stored.products;
+   if(Array.isArray(stored.expenseCategories))expenseCategories=stored.expenseCategories;
+   if(stored.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(stored.accountBalanceAdjustment)||0;
+   if(Array.isArray(stored.distributions))distributions=stored.distributions;
+  }else await idbPut('state',JSON.parse(JSON.stringify(currentState())));
+  render();
+ }catch(err){console.error('Atelier Manager storage initialization failed',err);alert('เปิดฐานข้อมูลในเครื่องไม่สำเร็จ ข้อมูลเดิมในเบราว์เซอร์ยังไม่ได้ถูกลบ กรุณาใช้เบราว์เซอร์เวอร์ชันล่าสุดและลองเปิดใหม่');render()}
 }
 function sum(list,type){return list.filter(x=>!type||x.type===type).reduce((a,x)=>a+Number(x.amount),0)}
 function productPerformance(list){
@@ -223,34 +224,17 @@ function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,
 }
 function renderTables(type){
  let list=entries.filter(x=>type==='income'?(x.type==='income'||x.type==='capital'):x.type===type),date=$(`${type}DateFilter`).value,month=$(`${type}MonthFilter`).value;
- const mode=ledgerMode[type]||'day';
- if(mode==='day'&&date)list=list.filter(x=>x.date===date);
- if(mode==='month'&&month)list=list.filter(x=>x.date.startsWith(month));
+ if(date)list=list.filter(x=>x.date===date);if(month)list=list.filter(x=>x.date.startsWith(month));
  list.sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
- const total=list.reduce((n,x)=>n+Number(x.amount||0),0);
- const summary=$(`${type}PeriodSummary`);if(summary)summary.textContent=`${mode==='day'?(date?thdate(date):'ทุกวัน'):(month?new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(new Date(month+'-01T12:00:00')):'ทุกเดือน')} · ${list.length} รายการ · รวม ${fmt(total)}`;
- const dateField=$(`${type}DateFilter`),monthField=$(`${type}MonthFilter`);if(dateField)dateField.style.display=mode==='day'?'':'none';if(monthField)monthField.style.display=mode==='month'?'':'none';
  $(type+'Rows').innerHTML=list.map(x=>{
-  const edit=`<button class="btn secondary" style="padding:5px 8px" onclick="editEntry('${String(x.id).replace(/'/g,"\\'")}')">แก้ไข</button>`;
-  const del=`<button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${String(x.id).replace(/'/g,"\\'")}')">ลบ</button>`;
   if(type==='income'){
-   if(x.type==='capital')return `<tr><td>${thdate(x.date)}</td><td><b>เงินลงทุนเพิ่ม</b><br><span class="hint">${esc(x.note||'เงินส่วนตัวนำมาลงทุนในธุรกิจ')}</span></td><td>—</td><td class="green"><b>${fmt(x.amount)}</b></td><td>${edit} ${del}</td></tr>`;
-   let lines=x.items||[{name:x.title||'รายการขาย',qty:x.qty||1}],desc=lines.map(it=>`${esc(it.name)} × ${Number(it.qty)}`).join('<br>');let qty=lines.reduce((n,it)=>n+Number(it.qty||0),0);
-   return `<tr><td>${thdate(x.date)}</td><td>${desc}<br><span class="hint">ประเภทลูกค้า: ${esc(x.customerType||'ไม่ระบุ')}</span></td><td>${qty} ชิ้น</td><td class="green"><b>${fmt(x.amount)}</b></td><td>${edit} ${del}</td></tr>`;
+   if(x.type==='capital')return `<tr><td>${thdate(x.date)}</td><td><b>เงินลงทุนเพิ่ม</b><br><span class="hint">${esc(x.note||'เงินส่วนตัวนำมาลงทุนในธุรกิจ')}</span></td><td>—</td><td class="green"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="editEntry('${x.id}')">แก้ไข</button> <button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
+   let lines=x.items||[{name:x.title||'รายการขาย',qty:x.qty||1}],desc=lines.map(it=>`${esc(it.name)} × ${Number(it.qty)}`).join('<br>');
+   let qty=lines.reduce((n,it)=>n+Number(it.qty||0),0);
+   return `<tr><td>${thdate(x.date)}</td><td>${desc}<br><span class="hint">ประเภทลูกค้า: ${esc(x.customerType||'ไม่ระบุ')}</span></td><td>${qty} ชิ้น</td><td class="green"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="editEntry('${x.id}')">แก้ไข</button> <button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
   }
-  return `<tr><td>${thdate(x.date)}</td><td>${esc(x.category)}</td><td>${esc(x.title||x.productName||'-')}</td><td>${x.category==='สินค้า'?(Number(x.qty||0)+' '+esc(x.unit||'ชิ้น')):'-'}</td><td class="red"><b>${fmt(x.amount)}</b></td><td>${edit} ${del}</td></tr>`;
+  return `<tr><td>${thdate(x.date)}</td><td>${esc(x.category)}</td><td>${esc(x.title||x.productName||'-')}</td><td>${x.category==='สินค้า'?(Number(x.qty||0)+' '+esc(x.unit||'ชิ้น')):'-'}</td><td class="red"><b>${fmt(x.amount)}</b></td><td><button class="btn secondary" style="padding:5px 8px" onclick="editEntry('${x.id}')">แก้ไข</button> <button class="btn secondary" style="padding:5px 8px" onclick="removeEntry('${x.id}')">ลบ</button></td></tr>`;
  }).join('')||'<tr><td colspan="6" class="empty">ไม่มีรายการในช่วงเวลานี้</td></tr>';
-}
-function changeLedgerMode(type){ledgerMode[type]=$(`${type}ViewMode`).value;renderTables(type)}
-function moveLedger(type,delta){const mode=ledgerMode[type]||'day',d=$(`${type}DateFilter`),m=$(`${type}MonthFilter`);if(mode==='day'){let v=d.value||iso(today),x=new Date(v+'T12:00:00');x.setDate(x.getDate()+delta);d.value=iso(x)}else{let v=m.value||iso(today).slice(0,7),x=new Date(v+'-01T12:00:00');x.setMonth(x.getMonth()+delta);m.value=x.getFullYear()+'-'+pad(x.getMonth()+1)}renderTables(type)}
-function todayLedger(type){if(ledgerMode[type]==='day'){$(`${type}DateFilter`).value=iso(today)}else{$(`${type}MonthFilter`).value=iso(today).slice(0,7)}renderTables(type)}
-function editEntry(id){
- const x=entries.find(e=>String(e.id)===String(id));if(!x)return;
- const d=prompt('แก้ไขวันที่ (YYYY-MM-DD)',x.date||iso(today));if(d===null)return;if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){alert('รูปแบบวันที่ไม่ถูกต้อง');return}
- const amount=prompt('แก้ไขยอดเงิน (บาท)',String(x.amount??0));if(amount===null)return;if(!Number.isFinite(Number(amount))||Number(amount)<0){alert('ยอดเงินไม่ถูกต้อง');return}
- let title=x.title||x.productName||'';if(x.type==='expense'){const t=prompt('แก้ไขรายละเอียด',title);if(t===null)return;title=t;const c=prompt('แก้ไขหมวดหมู่',x.category||'เบ็ดเตล็ด');if(c===null)return;x.category=c;if(c&&!expenseCategories.includes(c))expenseCategories.push(c)}
- x.date=d;x.amount=Number(Number(amount).toFixed(2));if(x.type==='expense'){x.title=title;if(x.category==='สินค้า'&&x.productId){const p=products.find(p=>p.id===x.productId);if(p&&Number(x.stockAddedQty)>0){const oldQty=Number(x.stockAddedQty)||0,qtyInput=prompt('จำนวนสินค้าที่ซื้อ (หน่วย)',String(x.qty||oldQty));if(qtyInput===null)return;const newQty=Number(qtyInput);if(Number.isFinite(newQty)&&newQty>=0){p.qty=Math.max(0,(Number(p.qty)||0)+newQty-oldQty);x.qty=newQty;x.stockAddedQty=newQty}}}}
- save();render();
 }
 function renderExpenseFields(category){
  const host=$('expenseDynamicFields');if(!host)return;
@@ -297,7 +281,7 @@ function addExpenseCategory(){
  const select=$('expenseCategory');if(select){select.innerHTML=expenseCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');select.value=name;renderExpenseFields(name)}
  input.value='';$('newExpenseCategoryWrap').style.display='none';
 }
-function render(){for(const t of ['income','expense']){if($(t+'DateFilter')&&!$(t+'DateFilter').value)$(t+'DateFilter').value=iso(today);if($(t+'MonthFilter')&&!$(t+'MonthFilter').value)$(t+'MonthFilter').value=iso(today).slice(0,7);if($(t+'ViewMode'))$(t+'ViewMode').value=ledgerMode[t]}renderOverview();renderDistribution();let now=iso(today),m=now.slice(0,7),y=now.slice(0,4);for(let t of ['income','expense']){$(t+'Today').textContent=fmt(sum(entries.filter(x=>x.date===now),t));$(t+'Month').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(m)),t));$(t+'Year').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(y)),t));renderTables(t)}$('stockGrid').innerHTML=products.map((p,i)=>`<div class="card stock-card">${p.image?`<img class="product-photo" src="${p.image}" alt="${esc(p.name)}">`:`<div class="product-photo" style="display:grid;place-items:center;color:#9b8876;font-size:28px">▧</div>`}<div class="label" style="margin-top:10px">วัสดุ / อุปกรณ์</div><b>${esc(p.name)}</b><div class="hint" style="min-height:30px;margin-top:3px">${esc(p.description||'ไม่มีรายละเอียด')}</div><div class="value" style="font-size:21px">${p.qty} <span class="hint">${esc(p.unit)}</span></div><div class="hint" style="display:grid;gap:3px;margin-top:7px"><span>ต้นทุนต่อหน่วย: <b>${fmt(p.cost||0)}</b></span><span>ราคาขายต่อหน่วย: <b>${fmt(p.salePrice||0)}</b></span></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn secondary" style="padding:6px 9px" onclick="editStock(${i})">แก้ไขสินค้า</button><button class="btn secondary" style="padding:6px 9px" onclick="adjustStock(${i})">ปรับจำนวน</button></div></div>`).join('')}
+function render(){renderOverview();renderDistribution();let now=iso(today),m=now.slice(0,7),y=now.slice(0,4);for(let t of ['income','expense']){$(t+'Today').textContent=fmt(sum(entries.filter(x=>x.date===now),t));$(t+'Month').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(m)),t));$(t+'Year').textContent=fmt(sum(entries.filter(x=>x.date.startsWith(y)),t));renderTables(t)}$('stockGrid').innerHTML=products.map((p,i)=>`<div class="card stock-card">${p.image?`<img class="product-photo" src="${p.image}" alt="${esc(p.name)}">`:`<div class="product-photo" style="display:grid;place-items:center;color:#9b8876;font-size:28px">▧</div>`}<div class="label" style="margin-top:10px">วัสดุ / อุปกรณ์</div><b>${esc(p.name)}</b><div class="hint" style="min-height:30px;margin-top:3px">${esc(p.description||'ไม่มีรายละเอียด')}</div><div class="value" style="font-size:21px">${p.qty} <span class="hint">${esc(p.unit)}</span></div><div class="hint" style="display:grid;gap:3px;margin-top:7px"><span>ต้นทุนต่อหน่วย: <b>${fmt(p.cost||0)}</b></span><span>ราคาขายต่อหน่วย: <b>${fmt(p.salePrice||0)}</b></span></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button class="btn secondary" style="padding:6px 9px" onclick="editStock(${i})">แก้ไขสินค้า</button><button class="btn secondary" style="padding:6px 9px" onclick="adjustStock(${i})">ปรับจำนวน</button></div></div>`).join('')}
 let saleLines=[];
 
 function formatMonthLabel(month){
@@ -506,103 +490,74 @@ $('entryForm').onsubmit=async e=>{
   if(submitButton){submitButton.disabled=false;submitButton.textContent=editingStockIndex!==null?'บันทึกการแก้ไข':'บันทึกรายการ'}
  }
 };
+function editEntry(id){
+ const x=entries.find(v=>v.id===id);if(!x)return;
+ const newDate=prompt('แก้ไขวันที่ (YYYY-MM-DD)',x.date||'');if(newDate===null)return;
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(newDate)){alert('รูปแบบวันที่ไม่ถูกต้อง');return}
+ const amountText=prompt('แก้ไขจำนวนเงิน (บาท)',String(Number(x.amount)||0));if(amountText===null)return;
+ const amount=Number(amountText);if(!Number.isFinite(amount)||amount<0){alert('จำนวนเงินไม่ถูกต้อง');return}
+ if(x.type==='income'){
+  const oldAmount=Number(x.amount)||0,ratio=oldAmount>0?amount/oldAmount:0;
+  (x.items||[]).forEach(it=>{it.lineTotal=Number(((Number(it.lineTotal!=null?it.lineTotal:(Number(it.price)||0)*(Number(it.qty)||0)))*ratio).toFixed(2))});
+  x.amount=amount;
+ }else if(x.type==='expense'){
+  if(x.category!=='สินค้า'){
+   const title=prompt('แก้ไขรายละเอียดรายจ่าย',x.title||'');if(title===null)return;x.title=title;
+   const category=prompt('แก้ไขหมวดหมู่รายจ่าย',x.category||'เบ็ดเตล็ด');if(category===null)return;
+   if(category.trim())x.category=category.trim();
+  }else alert('รายการซื้อสินค้าแก้ไขได้เฉพาะวันที่และยอดเงิน เพื่อป้องกันยอดสต็อกคลาดเคลื่อน');
+  x.amount=amount;
+ }else if(x.type==='capital'){
+  const note=prompt('แก้ไขหมายเหตุ',x.note||'');if(note===null)return;x.note=note;x.amount=amount;
+ }else x.amount=amount;
+ x.date=newDate;save().then(render).catch(()=>{});
+}
 function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
 function adjustAccountBalance(){
  const withdrawn=distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0);
- const ledgerBalance=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn;
- const currentTotal=ledgerBalance+accountBalanceAdjustment;
- const defaultCash=accountBalanceCash===null?Math.max(0,currentTotal):accountBalanceCash;
- const defaultTransfer=accountBalanceTransfer===null?0:accountBalanceTransfer;
- const cashInput=prompt('กรอกยอดเงินจริงที่มีอยู่ในร้าน (เงินสด) บาท',String(Number(defaultCash.toFixed(2))));
- if(cashInput===null)return;
- if(cashInput.trim()===''||!Number.isFinite(Number(cashInput))||Number(cashInput)<0){alert('กรุณากรอกยอดเงินสดเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
- const transferInput=prompt('กรอกยอดเงินจริงในบัญชีธนาคาร (เงินโอน) บาท',String(Number(defaultTransfer.toFixed(2))));
- if(transferInput===null)return;
- if(transferInput.trim()===''||!Number.isFinite(Number(transferInput))||Number(transferInput)<0){alert('กรุณากรอกยอดเงินโอนเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
- accountBalanceCash=Number(Number(cashInput).toFixed(2));
- accountBalanceTransfer=Number(Number(transferInput).toFixed(2));
- accountBalanceAdjustment=Number((accountBalanceCash+accountBalanceTransfer-ledgerBalance).toFixed(2));
+ const current=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn+accountBalanceAdjustment;
+ const entered=prompt('กรอกยอดเงินจริงที่มีอยู่ในบัญชีตอนนี้ (บาท)',String(Number(current.toFixed(2))));
+ if(entered===null||entered.trim()===''||!Number.isFinite(Number(entered))||Number(entered)<0){if(entered!==null)alert('กรุณากรอกยอดเงินเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
+ const target=Number(entered);
+ accountBalanceAdjustment=Number((target-(sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-withdrawn)).toFixed(2));
  save();render();
- alert('ปรับยอดเงินเรียบร้อย\nเงินสด: '+fmt(accountBalanceCash)+'\nเงินโอน: '+fmt(accountBalanceTransfer)+'\nรวมทั้งหมด: '+fmt(accountBalanceCash+accountBalanceTransfer));
 }
-function clearFilter(t){$(t+'DateFilter').value=iso(today);$(t+'MonthFilter').value=iso(today).slice(0,7);ledgerMode[t]='day';$(t+'ViewMode').value='day';renderTables(t)}
+function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
-
 function exportData(){
- const backup={
-  backupFormat:'atelier-manager-backup',
-  backupVersion:1,
-  exportedAt:new Date().toISOString(),
-  entries,products,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,expenseCategories,distributions
- };
- const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
- const url=URL.createObjectURL(blob);
- const a=document.createElement('a');
- a.href=url;
- a.download='atelier-backup-'+iso(new Date())+'.json';
- document.body.appendChild(a);
- a.click();
- a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1500);
+ const payload={backupFormat:'atelier-manager-backup',backupVersion:1,exportedAt:new Date().toISOString(),...currentState()};
+ const blob=new Blob([JSON.stringify(payload)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='atelier-backup-'+iso(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-function validateBackupData(d){
- if(!d || typeof d!=='object' || Array.isArray(d)) throw new Error('ไฟล์ไม่ใช่ข้อมูล JSON object');
- if(!Array.isArray(d.entries)) throw new Error('ไม่พบรายการรายรับ/รายจ่าย หรือรูปแบบ entries ไม่ถูกต้อง');
- if(!Array.isArray(d.products)) throw new Error('ไม่พบรายการสินค้า หรือรูปแบบ products ไม่ถูกต้อง');
- if(!d.entries.every(x=>x && typeof x==='object' && !Array.isArray(x))) throw new Error('พบรายการรายรับ/รายจ่ายที่รูปแบบไม่ถูกต้อง');
- if(!d.products.every(x=>x && typeof x==='object' && !Array.isArray(x))) throw new Error('พบข้อมูลสินค้าที่รูปแบบไม่ถูกต้อง');
- if(d.expenseCategories!==undefined && !Array.isArray(d.expenseCategories)) throw new Error('รูปแบบหมวดหมู่รายจ่ายไม่ถูกต้อง');
- if(d.distributions!==undefined && !Array.isArray(d.distributions)) throw new Error('รูปแบบประวัติแบ่งกำไรไม่ถูกต้อง');
- if(d.accountBalanceAdjustment!==undefined && !Number.isFinite(Number(d.accountBalanceAdjustment))) throw new Error('ยอดปรับปรุงเงินในบัญชีไม่ถูกต้อง');
- if(d.accountBalanceCash!==undefined && d.accountBalanceCash!==null && !Number.isFinite(Number(d.accountBalanceCash))) throw new Error('ยอดเงินสดที่ปรับบัญชีไม่ถูกต้อง');
- if(d.accountBalanceTransfer!==undefined && d.accountBalanceTransfer!==null && !Number.isFinite(Number(d.accountBalanceTransfer))) throw new Error('ยอดเงินโอนที่ปรับบัญชีไม่ถูกต้อง');
-}
-$('importFile').onchange=e=>{
- const f=e.target.files && e.target.files[0];
- if(!f)return;
- const reader=new FileReader();
- reader.onerror=()=>{alert('อ่านไฟล์ไม่สำเร็จ กรุณาลองเลือกไฟล์ JSON อีกครั้ง');e.target.value=''};
- reader.onload=()=>{
-  let d;
-  try{d=JSON.parse(String(reader.result||''));validateBackupData(d)}
-  catch(err){alert('ไม่สามารถนำเข้าไฟล์นี้ได้: '+(err&&err.message?err.message:'รูปแบบ JSON ไม่ถูกต้อง'));e.target.value='';return}
-  const next={
-   entries:d.entries,
-   products:d.products.map((p,i)=>({...p,id:p.id||('p'+i+'_'+String(p.name||'product')),description:p.description==null?'':p.description,image:p.image==null?'':p.image,unit:p.unit==null?'ชิ้น':p.unit,cost:p.cost==null?0:p.cost,salePrice:p.salePrice==null?0:p.salePrice})),
-   accountBalanceAdjustment:d.accountBalanceAdjustment===undefined?0:Number(d.accountBalanceAdjustment)||0,
-   accountBalanceCash:d.accountBalanceCash===undefined||d.accountBalanceCash===null?null:Number(d.accountBalanceCash)||0,
-   accountBalanceTransfer:d.accountBalanceTransfer===undefined||d.accountBalanceTransfer===null?null:Number(d.accountBalanceTransfer)||0,
-   expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด'],
-   distributions:Array.isArray(d.distributions)?d.distributions:[]
-  };
-  if(!next.expenseCategories.includes('สินค้า'))next.expenseCategories.push('สินค้า');
-  const previous={entries,products,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,expenseCategories,distributions};
-  try{
-   entries=next.entries;products=next.products;accountBalanceAdjustment=next.accountBalanceAdjustment;accountBalanceCash=next.accountBalanceCash;accountBalanceTransfer=next.accountBalanceTransfer;expenseCategories=next.expenseCategories;distributions=next.distributions;
-   save();
-  }catch(err){
-   entries=previous.entries;products=previous.products;accountBalanceAdjustment=previous.accountBalanceAdjustment;accountBalanceCash=previous.accountBalanceCash;accountBalanceTransfer=previous.accountBalanceTransfer;expenseCategories=previous.expenseCategories;distributions=previous.distributions;
-   const reason=err&&err.name==='QuotaExceededError'?'พื้นที่จัดเก็บในเบราว์เซอร์ไม่เพียงพอ ข้อมูลเดิมยังคงอยู่ กรุณาลดขนาดรูปภาพหรือเคลียร์พื้นที่ก่อนลองใหม่':(err&&err.message?err.message:'เกิดข้อผิดพลาดขณะบันทึกข้อมูล');
-   alert('นำเข้าข้อมูลไม่สำเร็จ: '+reason);e.target.value='';return;
-  }
-  try{
-   render();
-   alert('นำเข้าข้อมูลสำเร็จ\\nรายรับ/รายจ่าย: '+entries.length+' รายการ\\nสินค้า: '+products.length+' รายการ\\nหมวดหมู่รายจ่าย: '+expenseCategories.length+' หมวด\\nประวัติแบ่งกำไร: '+distributions.length+' รายการ\\nรูปภาพสินค้า: '+products.filter(p=>typeof p.image==='string'&&p.image.startsWith('data:image/')).length+' รูป');
-  }catch(err){alert('บันทึกข้อมูลสำเร็จแล้ว แต่หน้าจอแสดงผลมีปัญหา กรุณารีเฟรชหน้าเว็บเพื่อดูข้อมูล')}
-  e.target.value='';
- };
- reader.readAsText(f);
+$('importFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{
+  const d=JSON.parse(await f.text());
+  if(!d||!Array.isArray(d.entries)||!Array.isArray(d.products))throw new Error('ไม่พบ entries หรือ products ในไฟล์');
+  const next={entries:d.entries,products:d.products,expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:expenseCategories,accountBalanceAdjustment:Number(d.accountBalanceAdjustment)||0,distributions:Array.isArray(d.distributions)?d.distributions:[]};
+  if(!confirm('นำเข้าข้อมูลสำรอง '+next.entries.length+' รายการ และสินค้า '+next.products.length+' รายการใช่ไหม? ข้อมูลปัจจุบันในอุปกรณ์นี้จะถูกแทนที่'))return;
+  const previous=currentState();entries=next.entries;products=next.products;expenseCategories=next.expenseCategories;accountBalanceAdjustment=next.accountBalanceAdjustment;distributions=next.distributions;
+  try{await save();render();alert('นำเข้าข้อมูลเรียบร้อย รวมรูปภาพที่อยู่ในไฟล์สำรองแล้ว')}
+  catch(err){entries=previous.entries;products=previous.products;expenseCategories=previous.expenseCategories;accountBalanceAdjustment=previous.accountBalanceAdjustment;distributions=previous.distributions;throw err}
+ }catch(err){console.error('Import failed',err);alert('นำเข้าข้อมูลไม่สำเร็จ: '+(err?.message||'ไฟล์ไม่ถูกต้อง'))}
+ finally{e.target.value=''}
 };
-
 if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('atelier_dark',document.body.classList.contains('dark'))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-for(let t of ['income','expense']){$(t+'DateFilter').onchange=()=>renderTables(t);let sel=$(t+'MonthFilter');for(let i=0;i<12;i++){let v=today.getFullYear()+'-'+pad(i+1);sel.add(new Option(new Intl.DateTimeFormat('th-TH',{month:'long'}).format(new Date(today.getFullYear(),i,1)),v))}sel.onchange=()=>renderTables(t)}
+for(let t of ['income','expense']){
+ $(t+'DateFilter').onchange=()=>renderTables(t);
+ let sel=$(t+'MonthFilter'),months=new Set();
+ for(let i=-24;i<=12;i++){let d=new Date(today.getFullYear(),today.getMonth()+i,1);months.add(d.getFullYear()+'-'+pad(d.getMonth()+1))}
+ entries.forEach(x=>{if(x.date&&/^\\d{4}-\\d{2}$/.test(x.date.slice(0,7)))months.add(x.date.slice(0,7))});
+ [...months].sort().reverse().forEach(v=>{let [y,m]=v.split('-').map(Number);sel.add(new Option(new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(new Date(y,m-1,1)),v))});
+ sel.onchange=()=>renderTables(t)
+}
 function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
 $('distMonth').value=iso(today).slice(0,7);
 $('distMonth').onchange=renderDistribution;
 $('distPrev').onclick=()=>shiftDistributionMonth(-1);
 $('distNext').onclick=()=>shiftDistributionMonth(1);
-render();
+initializeStorage();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err));
 </script></body></html>
