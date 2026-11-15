@@ -493,11 +493,69 @@ function adjustAccountBalance(){
 }
 function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
-function exportData(){let blob=new Blob([JSON.stringify({entries,products,accountBalanceAdjustment,expenseCategories,distributions},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='atelier-backup.json';a.click();URL.revokeObjectURL(a.href)}
-$('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries)||!Array.isArray(d.products))throw 0;entries=d.entries;products=d.products;if(d.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(d.accountBalanceAdjustment)||0;
- if(Array.isArray(d.expenseCategories))expenseCategories=d.expenseCategories;
- if(Array.isArray(d.distributions))distributions=d.distributions;
- save();render();alert('นำเข้าข้อมูลเรียบร้อย')}catch{alert('ไฟล์สำรองไม่ถูกต้อง')}};r.readAsText(f)};
+
+function exportData(){
+ const backup={
+  backupFormat:'atelier-manager-backup',
+  backupVersion:1,
+  exportedAt:new Date().toISOString(),
+  entries,products,accountBalanceAdjustment,expenseCategories,distributions
+ };
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download='atelier-backup-'+iso(new Date())+'.json';
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function validateBackupData(d){
+ if(!d || typeof d!=='object' || Array.isArray(d)) throw new Error('ไฟล์ไม่ใช่ข้อมูล JSON object');
+ if(!Array.isArray(d.entries)) throw new Error('ไม่พบรายการรายรับ/รายจ่าย หรือรูปแบบ entries ไม่ถูกต้อง');
+ if(!Array.isArray(d.products)) throw new Error('ไม่พบรายการสินค้า หรือรูปแบบ products ไม่ถูกต้อง');
+ if(!d.entries.every(x=>x && typeof x==='object' && !Array.isArray(x))) throw new Error('พบรายการรายรับ/รายจ่ายที่รูปแบบไม่ถูกต้อง');
+ if(!d.products.every(x=>x && typeof x==='object' && !Array.isArray(x))) throw new Error('พบข้อมูลสินค้าที่รูปแบบไม่ถูกต้อง');
+ if(d.expenseCategories!==undefined && !Array.isArray(d.expenseCategories)) throw new Error('รูปแบบหมวดหมู่รายจ่ายไม่ถูกต้อง');
+ if(d.distributions!==undefined && !Array.isArray(d.distributions)) throw new Error('รูปแบบประวัติแบ่งกำไรไม่ถูกต้อง');
+ if(d.accountBalanceAdjustment!==undefined && !Number.isFinite(Number(d.accountBalanceAdjustment))) throw new Error('ยอดปรับปรุงเงินในบัญชีไม่ถูกต้อง');
+}
+$('importFile').onchange=e=>{
+ const f=e.target.files && e.target.files[0];
+ if(!f)return;
+ const reader=new FileReader();
+ reader.onerror=()=>{alert('อ่านไฟล์ไม่สำเร็จ กรุณาลองเลือกไฟล์ JSON อีกครั้ง');e.target.value=''};
+ reader.onload=()=>{
+  let d;
+  try{d=JSON.parse(String(reader.result||''));validateBackupData(d)}
+  catch(err){alert('ไม่สามารถนำเข้าไฟล์นี้ได้: '+(err&&err.message?err.message:'รูปแบบ JSON ไม่ถูกต้อง'));e.target.value='';return}
+  const next={
+   entries:d.entries,
+   products:d.products.map((p,i)=>({...p,id:p.id||('p'+i+'_'+String(p.name||'product')),description:p.description==null?'':p.description,image:p.image==null?'':p.image,unit:p.unit==null?'ชิ้น':p.unit,cost:p.cost==null?0:p.cost,salePrice:p.salePrice==null?0:p.salePrice})),
+   accountBalanceAdjustment:d.accountBalanceAdjustment===undefined?0:Number(d.accountBalanceAdjustment)||0,
+   expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:['ค่าเช่าสถานที่','ค่าพนักงาน','ค่าวัสดุ','ค่าอุปกรณ์','ค่าอาหาร / เครื่องดื่ม','ค่าเดินทาง','ค่าน้ำ / ค่าไฟ','การตลาด','สินค้า','เบ็ดเตล็ด'],
+   distributions:Array.isArray(d.distributions)?d.distributions:[]
+  };
+  if(!next.expenseCategories.includes('สินค้า'))next.expenseCategories.push('สินค้า');
+  const previous={entries,products,accountBalanceAdjustment,expenseCategories,distributions};
+  try{
+   entries=next.entries;products=next.products;accountBalanceAdjustment=next.accountBalanceAdjustment;expenseCategories=next.expenseCategories;distributions=next.distributions;
+   save();
+  }catch(err){
+   entries=previous.entries;products=previous.products;accountBalanceAdjustment=previous.accountBalanceAdjustment;expenseCategories=previous.expenseCategories;distributions=previous.distributions;
+   const reason=err&&err.name==='QuotaExceededError'?'พื้นที่จัดเก็บในเบราว์เซอร์ไม่เพียงพอ ข้อมูลเดิมยังคงอยู่ กรุณาลดขนาดรูปภาพหรือเคลียร์พื้นที่ก่อนลองใหม่':(err&&err.message?err.message:'เกิดข้อผิดพลาดขณะบันทึกข้อมูล');
+   alert('นำเข้าข้อมูลไม่สำเร็จ: '+reason);e.target.value='';return;
+  }
+  try{
+   render();
+   alert('นำเข้าข้อมูลสำเร็จ\\nรายรับ/รายจ่าย: '+entries.length+' รายการ\\nสินค้า: '+products.length+' รายการ\\nหมวดหมู่รายจ่าย: '+expenseCategories.length+' หมวด\\nประวัติแบ่งกำไร: '+distributions.length+' รายการ\\nรูปภาพสินค้า: '+products.filter(p=>typeof p.image==='string'&&p.image.startsWith('data:image/')).length+' รูป');
+  }catch(err){alert('บันทึกข้อมูลสำเร็จแล้ว แต่หน้าจอแสดงผลมีปัญหา กรุณารีเฟรชหน้าเว็บเพื่อดูข้อมูล')}
+  e.target.value='';
+ };
+ reader.readAsText(f);
+};
+
 if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('atelier_dark',document.body.classList.contains('dark'))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
