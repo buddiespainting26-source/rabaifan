@@ -1,6 +1,6 @@
 {
-  "name": "ระบายฝัน — Atelier Manager",
-  "short_name": "ระบายฝัน",
+  "name": "Atelier Manager - Painting Workshop",
+  "short_name": "Atelier",
   "description": "ระบบจัดการเวิร์กช็อประบายสี รายรับ รายจ่าย สต็อก และแบ่งกำไร",
   "lang": "th",
   "start_url": "./",

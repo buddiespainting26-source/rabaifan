@@ -542,6 +542,9 @@ function removeSaleLine(i){saleLines.splice(i,1);if(!saleLines.length)addSaleLin
 function readImageFile(file){return new Promise((resolve,reject)=>{if(!file){resolve('');return}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)})}
 $('entryForm').onsubmit=async e=>{
  e.preventDefault();
+ // Wait for IndexedDB hydration before reading or mutating in-memory records.
+ // This prevents a late initialization read from overwriting a just-saved expense.
+ try{await storageReady}catch(initError){alert('ระบบยังเปิดฐานข้อมูลไม่สำเร็จ กรุณารีเฟรชแอปแล้วลองอีกครั้ง');return}
  const form=e.currentTarget;
  const submitButton=form.querySelector('button[type="submit"]');
  if(form.dataset.submitting==='true')return;
@@ -609,8 +612,11 @@ $('entryForm').onsubmit=async e=>{
   }else if(activeType==='expense'){
    const category=f.category;
    if(category==='สินค้า'){
+    if(!f.expenseProductId||f.expenseQty===undefined||f.expenseCostTotal===undefined){
+     throw new Error('ข้อมูลสินค้าไม่ครบ กรุณาปิดหน้าต่างรายจ่ายแล้วเปิดใหม่อีกครั้ง');
+    }
     const qty=Number(f.expenseQty),total=Number(f.expenseCostTotal),unit=f.expenseUnit||'ชิ้น';
-    if(!(qty>0)){alert('จำนวนสินค้าต้องมากกว่า 0');return}
+    if(!(qty>0)||!Number.isFinite(qty)){alert('จำนวนสินค้าต้องมากกว่า 0 และเป็นตัวเลขที่ถูกต้อง');return}
     if(!(total>=0)){alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');return}
     let product;
     if(f.expenseProductId==='__new__'){
@@ -623,7 +629,7 @@ $('entryForm').onsubmit=async e=>{
     const oldQty=Number(product.qty)||0,oldCost=Number(product.cost)||0,unitCost=qty>0?total/qty:0,newQty=oldQty+qty;
     product.qty=newQty;product.unit=unit;product.cost=newQty>0?Number((((oldQty*oldCost)+(qty*unitCost))/newQty).toFixed(2)):unitCost;
     product.salePrice=Number(product.salePrice)||0;
-    entries.push({id:Date.now().toString(),type:'expense',date:f.date,category:'สินค้า',title:product.name,productName:product.name,productId:product.id,qty,unit,amount:total,stockAddedQty:qty});
+    entries.push({id:'expense_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),type:'expense',date:f.date,category:'สินค้า',title:product.name,productName:product.name,productId:product.id,qty,unit,amount:Number(total.toFixed(2)),unitCost:Number(unitCost.toFixed(4)),stockAddedQty:qty});
    }else{
     const amount=Number(f.amount);
     if(!(amount>=0)){alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');return}
@@ -714,6 +720,6 @@ for(let t of ['income','expense']){
  sel.onchange=()=>renderTables(t)
 }
 function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
-initializeStorage();
+const storageReady=initializeStorage();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err));
 </script></body></html>
