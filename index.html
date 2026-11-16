@@ -88,7 +88,7 @@ body.dark .product-picker-card .picker-meta{color:#c5b19d}
 <header class="top"><div><div class="eyebrow">ATELIER · PAINTING WORKSHOP</div><h1 class="heading" id="pageTitle">ภาพรวมธุรกิจ</h1></div><div class="top-actions"><button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" aria-label="สลับธีม" title="สลับธีมสว่าง / มืด">☼ / ☾</button><div class="date-pill">◷ <b id="today"></b> <span id="clock"></span></div></div></header>
 <section class="page active" id="overview">
  <div class="cards">
-  <div class="card balance"><div class="label">เงินคงเหลือในบัญชี</div><div class="value" id="balance">฿0.00</div><div class="balance-breakdown"><span>เงินสด <b id="balanceCash">฿0.00</b></span><span>เงินโอน <b id="balanceTransfer">฿0.00</b></span></div><button class="btn secondary" style="margin-top:12px;padding:7px 11px" onclick="adjustAccountBalance()">ปรับยอดเงินให้ตรงกับบัญชี</button></div>
+  <div class="card balance"><div class="label">เงินคงเหลือในบัญชี</div><div class="value" id="balance">฿0.00</div><div class="balance-breakdown"><span>เงินสด (นับล่าสุด) <b id="balanceCash">฿0.00</b></span><span>เงินโอน (นับล่าสุด) <b id="balanceTransfer">฿0.00</b></span></div><div id="balanceCountedAt" class="hint" style="margin-top:6px">ยังไม่มีประวัติการตรวจนับ</div><button class="btn secondary" style="margin-top:12px;padding:7px 11px" onclick="adjustAccountBalance()">ตรวจนับเงินสดและเงินโอน</button></div>
   <div class="card metric"><span class="metric-icon">↗</span><div class="label">รายรับทั้งหมด</div><div class="value" id="ovIncome">฿0</div><div class="hint" id="ovIncomeLabel">รายรับวันนี้</div></div>
   <div class="card metric"><span class="metric-icon">↙</span><div class="label">รายจ่ายทั้งหมด</div><div class="value" id="ovExpense">฿0</div><div class="hint" id="ovExpenseLabel">รายจ่ายวันนี้</div></div>
   <div class="card metric"><span class="metric-icon">✳</span><div class="label">กำไรสุทธิ</div><div class="value" id="ovProfit">฿0</div><div class="hint" id="ovProfitLabel">กำไรวันนี้</div></div>
@@ -149,7 +149,22 @@ body.dark .product-picker-card .picker-meta{color:#c5b19d}
 </main></div>
 <nav class="mobile-nav"><button class="active" data-page="overview"><span>▦</span>ภาพรวม</button><button data-page="income"><span>↗</span>รายรับ</button><button data-page="expense"><span>↙</span>รายจ่าย</button><button data-page="stock"><span>▤</span>สต็อก</button><button data-page="distribution"><span>％</span>แบ่งกำไร</button><button data-page="settings"><span>⚙</span>ตั้งค่า</button></nav>
 <div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">เพิ่มรายการ</h3><button class="close" onclick="closeModal()">×</button></div><form id="entryForm"><div id="formFields" class="form-grid"></div><div class="modal-actions"><button type="button" class="btn secondary" onclick="closeModal()">ยกเลิก</button><button class="btn" type="submit">บันทึกรายการ</button></div></form></div></div>
-<div class="modal" id="balanceModal"><div class="modal-box"><div class="modal-head"><h3>ปรับยอดเงินคงเหลือ</h3><button class="close" type="button" onclick="closeBalanceModal()">×</button></div><form id="balanceForm"><div class="form-grid"><div class="field"><label for="balanceCashInput">ยอดเงินสด (บาท)</label><input id="balanceCashInput" name="cash" type="number" min="0" step=".01" placeholder="0.00" required></div><div class="field"><label for="balanceTransferInput">ยอดเงินโอน (บาท)</label><input id="balanceTransferInput" name="transfer" type="number" min="0" step=".01" placeholder="0.00" required></div></div><p class="hint" style="margin-top:12px">ยอดเงินคงเหลือรวมจะคำนวณจากเงินสด + เงินโอน</p><div class="modal-actions"><button type="button" class="btn secondary" onclick="closeBalanceModal()">ยกเลิก</button><button class="btn" type="submit">ตกลง</button></div></form></div></div>
+<div class="modal" id="balanceModal"><div class="modal-box"><div class="modal-head"><h3>ตรวจนับเงินสดและเงินโอน</h3><button class="close" type="button" onclick="closeBalanceModal()">×</button></div>
+<form id="balanceForm"><div class="form-grid">
+<div class="field"><label for="balanceCashInput">เงินสดที่นับได้จริง (บาท)</label><input id="balanceCashInput" name="cash" type="number" min="0" step=".01" placeholder="0.00" required></div>
+<div class="field"><label for="balanceTransferInput">เงินโอนที่ตรวจสอบได้ (บาท)</label><input id="balanceTransferInput" name="transfer" type="number" min="0" step=".01" placeholder="0.00" required></div>
+</div>
+<div id="balanceReconcilePreview" class="hint" style="margin-top:12px;padding:12px;border-radius:10px;background:var(--soft,#f3ece3)"></div>
+<p class="hint" style="margin-top:8px">การตรวจนับนี้จะบันทึกยอดเงินจริงและส่วนต่างไว้เป็นประวัติเท่านั้น จะไม่เปลี่ยนยอดเงินคงเหลือตามรายรับ–รายจ่าย</p>
+<div class="modal-actions"><button type="button" class="btn secondary" onclick="closeBalanceModal()">ยกเลิก</button><button class="btn" type="submit">บันทึกผลตรวจนับ</button></div></form>
+<div style="border-top:1px solid var(--line,#ddd);margin-top:16px;padding-top:14px">
+<h4 style="margin:0 0 8px">โอนเงินสดเข้าบัญชีธนาคาร</h4>
+<div class="form-grid"><div class="field"><label for="cashToBankAmount">จำนวนเงิน (บาท)</label><input id="cashToBankAmount" type="number" min="0.01" step=".01" placeholder="จำนวนเงินที่ฝาก"></div>
+<div class="field" style="display:flex;align-items:end"><button type="button" class="btn secondary" style="width:100%" onclick="transferCashToBank()">บันทึกการโอนเงิน</button></div></div>
+<p class="hint">เป็นการย้ายเงินจากเงินสดไปเงินโอน ไม่ถือเป็นรายรับหรือรายจ่าย และไม่เปลี่ยนยอดรวม</p>
+</div>
+<div id="balanceHistoryList" style="margin-top:14px"></div>
+</div></div>
 <script>
 const $=id=>document.getElementById(id), today=new Date(), pad=n=>String(n).padStart(2,'0'), iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()), fmt=n=>'฿'+Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2}), thdate=s=>new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric'}).format(new Date(s+'T12:00:00'));
 let entries=JSON.parse(localStorage.getItem('atelier_entries')||'[]'),products=JSON.parse(localStorage.getItem('atelier_products')||'null')||[
@@ -166,6 +181,7 @@ let expenseCategories=JSON.parse(localStorage.getItem('atelier_expense_categorie
 if(!expenseCategories.includes('สินค้า'))expenseCategories.push('สินค้า');entries.filter(x=>x.type==='expense'&&x.category).forEach(x=>{if(!expenseCategories.includes(x.category))expenseCategories.push(x.category)});
 let accountBalanceAdjustment=Number(localStorage.getItem('atelier_balance_adjustment')||0);
 let accountBalanceCash=null,accountBalanceTransfer=null;
+let balanceHistory=[];
 let distributions=JSON.parse(localStorage.getItem('atelier_distributions')||'[]');
 let range='day',cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate()),activeType='',editingStockIndex=null,editingEntryId=null;
 const DB_NAME='atelier_manager_db',DB_VERSION=1,DB_STORE='app_state';
@@ -182,7 +198,7 @@ function openAtelierDB(){
 function idbGet(key){return openAtelierDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly'),r=tx.objectStore(DB_STORE).get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)}))}
 function idbPut(key,value){return openAtelierDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(value,key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('บันทึกฐานข้อมูลไม่สำเร็จ'));tx.onabort=()=>reject(tx.error||new Error('ยกเลิกการบันทึก'))}))}
 function ledgerBalance(){return sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0)+accountBalanceAdjustment}
-function currentState(){return {entries,products,expenseCategories,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,distributions}}
+function currentState(){return {entries,products,expenseCategories,accountBalanceAdjustment,accountBalanceCash,accountBalanceTransfer,balanceHistory,distributions}}
 async function save(){
  const snapshot=JSON.parse(JSON.stringify(currentState()));
  saveQueue=saveQueue.catch(()=>{}).then(()=>idbPut('state',snapshot));
@@ -196,6 +212,7 @@ async function initializeStorage(){
    if(Array.isArray(stored.expenseCategories))expenseCategories=stored.expenseCategories;
    if(stored.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(stored.accountBalanceAdjustment)||0;
    if(Array.isArray(stored.distributions))distributions=stored.distributions;
+   if(Array.isArray(stored.balanceHistory))balanceHistory=stored.balanceHistory;
    const migratedCuts=migrateLegacyDistributions();
    accountBalanceCash=stored.accountBalanceCash==null?ledgerBalance():Math.max(0,Number(stored.accountBalanceCash)||0);
    accountBalanceTransfer=stored.accountBalanceTransfer==null?0:Math.max(0,Number(stored.accountBalanceTransfer)||0);
@@ -269,7 +286,7 @@ document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>setRange(b.da
 function move(n){if(range==='day')cursor.setDate(cursor.getDate()+n);else if(range==='month')cursor.setMonth(cursor.getMonth()+n);else cursor.setFullYear(cursor.getFullYear()+n);render()}
 $('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('pickDate').value=iso(cursor);$('pickDate').onchange=e=>{if(e.target.value){cursor=new Date(e.target.value+'T12:00:00');render()}};
 function labelPeriod(){if(range==='day')return thdate(iso(cursor));if(range==='month')return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(cursor);return 'ปี '+(cursor.getFullYear()+543)}
-function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,'expense'),p=netProfit(list);let totalIn=sum(entries,'income'),totalOut=sum(entries,'expense');$('balance').textContent=fmt(ledgerBalance());$('balanceCash').textContent=fmt(accountBalanceCash);$('balanceTransfer').textContent=fmt(accountBalanceTransfer);$('ovIncome').textContent=fmt(a);$('ovExpense').textContent=fmt(b);$('ovProfit').textContent=fmt(p);let suf=range==='day'?'วันนี้':range==='month'?'เดือนนี้':'ปีนี้';$('ovIncomeLabel').textContent=suf;$('ovExpenseLabel').textContent=suf;$('ovProfitLabel').textContent=suf;$('periodLabel').textContent=labelPeriod();$('pickDate').value=iso(cursor);$('chartIn').textContent=fmt(a);$('chartOut').textContent=fmt(b);$('chartProfit').textContent=fmt(p);
+function renderOverview(){let list=periodData(),a=sum(list,'income'),b=sum(list,'expense'),p=netProfit(list);let totalIn=sum(entries,'income'),totalOut=sum(entries,'expense');$('balance').textContent=fmt(ledgerBalance());$('balanceCash').textContent=fmt(accountBalanceCash);$('balanceTransfer').textContent=fmt(accountBalanceTransfer);const lastCount=latestBalanceCount();$('balanceCountedAt').textContent=lastCount?'นับล่าสุด '+new Date(lastCount.at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'ยังไม่มีประวัติการตรวจนับ';$('ovIncome').textContent=fmt(a);$('ovExpense').textContent=fmt(b);$('ovProfit').textContent=fmt(p);let suf=range==='day'?'วันนี้':range==='month'?'เดือนนี้':'ปีนี้';$('ovIncomeLabel').textContent=suf;$('ovExpenseLabel').textContent=suf;$('ovProfitLabel').textContent=suf;$('periodLabel').textContent=labelPeriod();$('pickDate').value=iso(cursor);$('chartIn').textContent=fmt(a);$('chartOut').textContent=fmt(b);$('chartProfit').textContent=fmt(p);
  let buckets=[],labs=[];if(range==='day'){buckets=[list];labs=['วันนี้']}else if(range==='month'){let days=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();for(let d=1;d<=days;d++){let s=cursor.getFullYear()+'-'+pad(cursor.getMonth()+1)+'-'+pad(d);buckets.push(list.filter(x=>x.date===s));labs.push(d)}}else{for(let m=0;m<12;m++){buckets.push(list.filter(x=>new Date(x.date+'T12:00:00').getMonth()===m));labs.push(['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][m])}}
  let max=Math.max(1,...buckets.flatMap(v=>[sum(v,'income'),sum(v,'expense')]));$('chart').innerHTML=buckets.map((v,i)=>`<div class="col"><div class="bars"><div class="bar in" title="รายรับ ${fmt(sum(v,'income'))}" style="height:${sum(v,'income')/max*100}%"></div><div class="bar out" title="รายจ่าย ${fmt(sum(v,'expense'))}" style="height:${sum(v,'expense')/max*100}%"></div></div><small>${labs[i]}</small></div>`).join('');
  const performance=productPerformance(list);
@@ -666,27 +683,58 @@ function editEntry(id){
  const submit=$('entryForm').querySelector('button[type="submit"]');if(submit)submit.textContent='บันทึกการแก้ไข';$('modal').classList.add('show');
 }
 function removeEntry(id){if(confirm('ต้องการลบรายการนี้ใช่ไหม?')){const target=entries.find(x=>x.id===id);if(target&&target.type==='expense'&&target.productId&&Number(target.stockAddedQty)>0){const p=products.find(x=>x.id===target.productId);if(p)p.qty=Math.max(0,(Number(p.qty)||0)-Number(target.stockAddedQty))}entries=entries.filter(x=>x.id!==id);save();render()}}
+function latestBalanceCount(){return [...balanceHistory].filter(x=>x.kind==='count').sort((a,b)=>String(b.at).localeCompare(String(a.at)))[0]||null}
+function renderBalanceHistory(){
+ const list=$('balanceHistoryList');if(!list)return;
+ const rows=[...balanceHistory].sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,8);
+ list.innerHTML='<h4 style="margin:0 0 8px">ประวัติการตรวจนับ / โอนเงิน</h4>'+(
+  rows.map(x=>{
+   const when=new Date(x.at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+   if(x.kind==='transfer')return `<div class="hint" style="padding:7px 0;border-bottom:1px solid var(--line,#ddd)">${when} · โอนเงินสดเข้าธนาคาร ${fmt(x.amount)} (เงินสด ${fmt(x.cashAfter)} / เงินโอน ${fmt(x.transferAfter)})</div>`;
+   return `<div class="hint" style="padding:7px 0;border-bottom:1px solid var(--line,#ddd)">${when} · ตรวจนับเงินสด ${fmt(x.cash)} + เงินโอน ${fmt(x.transfer)} = ${fmt(x.total)}<br>ยอดตามระบบ ${fmt(x.ledger)} · ${x.difference>=0?'เงินเกิน ':'เงินขาด '}${fmt(Math.abs(x.difference))}</div>`;
+  }).join('')||'<div class="hint">ยังไม่มีประวัติ</div>'
+ );
+}
+function updateBalancePreview(){
+ const cash=Number($('balanceCashInput').value)||0,transfer=Number($('balanceTransferInput').value)||0;
+ const counted=cash+transfer,ledger=ledgerBalance(),diff=Number((counted-ledger).toFixed(2));
+ $('balanceReconcilePreview').innerHTML=`ยอดคงเหลือตามระบบ: <b>${fmt(ledger)}</b><br>เงินสด + เงินโอนที่นับได้: <b>${fmt(counted)}</b><br><b>${Math.abs(diff)<0.005?'ยอดตรงกัน':diff>0?'เงินเกินระบบ '+fmt(diff):'เงินขาดจากระบบ '+fmt(Math.abs(diff))}</b>`;
+}
 function adjustAccountBalance(){
  if(accountBalanceCash==null)accountBalanceCash=ledgerBalance();
  if(accountBalanceTransfer==null)accountBalanceTransfer=0;
  $('balanceCashInput').value=Number(accountBalanceCash||0).toFixed(2);
  $('balanceTransferInput').value=Number(accountBalanceTransfer||0).toFixed(2);
+ $('cashToBankAmount').value='';
+ updateBalancePreview();renderBalanceHistory();
  $('balanceModal').classList.add('show');
 }
 function closeBalanceModal(){$('balanceModal').classList.remove('show')}
 $('balanceModal').addEventListener('click',e=>{if(e.target===$('balanceModal'))closeBalanceModal()});
+$('balanceCashInput').addEventListener('input',updateBalancePreview);
+$('balanceTransferInput').addEventListener('input',updateBalancePreview);
 $('balanceForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const cash=Number($('balanceCashInput').value),transfer=Number($('balanceTransferInput').value);
  if(!Number.isFinite(cash)||!Number.isFinite(transfer)||cash<0||transfer<0){alert('กรุณากรอกยอดเงินสดและเงินโอนเป็นตัวเลขตั้งแต่ 0 บาทขึ้นไป');return}
- const previous={cash:accountBalanceCash,transfer:accountBalanceTransfer,adjustment:accountBalanceAdjustment};
+ const previous={cash:accountBalanceCash,transfer:accountBalanceTransfer,history:JSON.parse(JSON.stringify(balanceHistory))};
  accountBalanceCash=Number(cash.toFixed(2));accountBalanceTransfer=Number(transfer.toFixed(2));
- const target=accountBalanceCash+accountBalanceTransfer;
- const ledgerBeforeAdjustment=sum(entries,'income')+sum(entries,'capital')-sum(entries,'expense')-distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0);
- accountBalanceAdjustment=Number((target-ledgerBeforeAdjustment).toFixed(2));
+ const ledger=Number(ledgerBalance().toFixed(2)),total=Number((accountBalanceCash+accountBalanceTransfer).toFixed(2));
+ balanceHistory.push({id:'count_'+Date.now(),kind:'count',at:new Date().toISOString(),cash:accountBalanceCash,transfer:accountBalanceTransfer,total,ledger,difference:Number((total-ledger).toFixed(2))});
  try{await save();closeBalanceModal();render()}
- catch(err){accountBalanceCash=previous.cash;accountBalanceTransfer=previous.transfer;accountBalanceAdjustment=previous.adjustment;render()}
+ catch(err){accountBalanceCash=previous.cash;accountBalanceTransfer=previous.transfer;balanceHistory=previous.history;renderBalanceHistory();updateBalancePreview()}
 });
+async function transferCashToBank(){
+ const amount=Number($('cashToBankAmount').value);
+ if(!Number.isFinite(amount)||amount<=0){alert('กรุณากรอกจำนวนเงินที่ต้องการโอนให้ถูกต้อง');return}
+ if(amount>Number(accountBalanceCash||0)){alert('จำนวนเงินที่โอนมากกว่าเงินสดที่นับไว้ กรุณาตรวจนับเงินสดใหม่ก่อน');return}
+ const previous={cash:accountBalanceCash,transfer:accountBalanceTransfer,history:JSON.parse(JSON.stringify(balanceHistory))};
+ accountBalanceCash=Number((Number(accountBalanceCash||0)-amount).toFixed(2));
+ accountBalanceTransfer=Number((Number(accountBalanceTransfer||0)+amount).toFixed(2));
+ balanceHistory.push({id:'transfer_'+Date.now(),kind:'transfer',at:new Date().toISOString(),amount:Number(amount.toFixed(2)),cashAfter:accountBalanceCash,transferAfter:accountBalanceTransfer});
+ try{await save();$('balanceCashInput').value=accountBalanceCash.toFixed(2);$('balanceTransferInput').value=accountBalanceTransfer.toFixed(2);$('cashToBankAmount').value='';updateBalancePreview();renderBalanceHistory();render()}
+ catch(err){accountBalanceCash=previous.cash;accountBalanceTransfer=previous.transfer;balanceHistory=previous.history;renderBalanceHistory();updateBalancePreview()}
+}
 function shiftDateFilter(type,delta){const el=$(type+'DateFilter');const base=el.value?new Date(el.value+'T12:00:00'):new Date();base.setDate(base.getDate()+delta);el.value=iso(base);$(type+'MonthFilter').value='';renderTables(type)}
 function clearFilter(t){$(t+'DateFilter').value='';$(t+'MonthFilter').value='';renderTables(t)}
 function adjustStock(i){let n=prompt('ใส่จำนวนคงเหลือใหม่',products[i].qty);if(n!==null&&n!==''&&!isNaN(n)){products[i].qty=Math.max(0,Number(n));save();render()}}
@@ -700,11 +748,11 @@ $('importFile').onchange=async e=>{
  try{
   const d=JSON.parse(await f.text());
   if(!d||!Array.isArray(d.entries)||!Array.isArray(d.products))throw new Error('ไม่พบ entries หรือ products ในไฟล์');
-  const next={entries:d.entries,products:d.products,expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:expenseCategories,accountBalanceAdjustment:Number(d.accountBalanceAdjustment)||0,accountBalanceCash:d.accountBalanceCash==null?null:Math.max(0,Number(d.accountBalanceCash)||0),accountBalanceTransfer:d.accountBalanceTransfer==null?null:Math.max(0,Number(d.accountBalanceTransfer)||0),distributions:Array.isArray(d.distributions)?d.distributions:[]};
+  const next={entries:d.entries,products:d.products,expenseCategories:Array.isArray(d.expenseCategories)?d.expenseCategories:expenseCategories,accountBalanceAdjustment:Number(d.accountBalanceAdjustment)||0,accountBalanceCash:d.accountBalanceCash==null?null:Math.max(0,Number(d.accountBalanceCash)||0),accountBalanceTransfer:d.accountBalanceTransfer==null?null:Math.max(0,Number(d.accountBalanceTransfer)||0),distributions:Array.isArray(d.distributions)?d.distributions:[],balanceHistory:Array.isArray(d.balanceHistory)?d.balanceHistory:[]};
   if(!confirm('นำเข้าข้อมูลสำรอง '+next.entries.length+' รายการ และสินค้า '+next.products.length+' รายการใช่ไหม? ข้อมูลปัจจุบันในอุปกรณ์นี้จะถูกแทนที่'))return;
-  const previous=currentState();entries=next.entries;products=next.products;expenseCategories=next.expenseCategories;accountBalanceAdjustment=next.accountBalanceAdjustment;distributions=next.distributions;accountBalanceCash=next.accountBalanceCash==null?ledgerBalance():next.accountBalanceCash;accountBalanceTransfer=next.accountBalanceTransfer==null?0:next.accountBalanceTransfer;
+  const previous=currentState();entries=next.entries;products=next.products;expenseCategories=next.expenseCategories;accountBalanceAdjustment=next.accountBalanceAdjustment;distributions=next.distributions;balanceHistory=next.balanceHistory;accountBalanceCash=next.accountBalanceCash==null?ledgerBalance():next.accountBalanceCash;accountBalanceTransfer=next.accountBalanceTransfer==null?0:next.accountBalanceTransfer;
   try{await save();render();alert('นำเข้าข้อมูลเรียบร้อย รวมรูปภาพที่อยู่ในไฟล์สำรองแล้ว')}
-  catch(err){entries=previous.entries;products=previous.products;expenseCategories=previous.expenseCategories;accountBalanceAdjustment=previous.accountBalanceAdjustment;distributions=previous.distributions;accountBalanceCash=previous.accountBalanceCash;accountBalanceTransfer=previous.accountBalanceTransfer;throw err}
+  catch(err){entries=previous.entries;products=previous.products;expenseCategories=previous.expenseCategories;accountBalanceAdjustment=previous.accountBalanceAdjustment;distributions=previous.distributions;accountBalanceCash=previous.accountBalanceCash;accountBalanceTransfer=previous.accountBalanceTransfer;balanceHistory=previous.balanceHistory;throw err}
  }catch(err){console.error('Import failed',err);alert('นำเข้าข้อมูลไม่สำเร็จ: '+(err?.message||'ไฟล์ไม่ถูกต้อง'))}
  finally{e.target.value=''}
 };
