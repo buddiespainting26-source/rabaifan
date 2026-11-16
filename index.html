@@ -112,35 +112,36 @@ body.dark .product-picker-card .picker-meta{color:#c5b19d}
 
 <section class="page" id="distribution">
  <div class="profit-hero">
-  <div class="section-head"><div><h2>แบ่งกำไรประจำเดือน</h2><p>คำนวณกำไรสุทธิหลังหักค่าใช้จ่ายดำเนินงานและต้นทุนสินค้าที่ขายจริง</p></div><span class="status pending" id="distributionStatus">รอตัดยอด</span></div>
-  <div class="toolbar" style="margin:15px 0 8px">
-   <div class="month-switch"><button type="button" id="distPrev">‹</button><span id="distMonthLabel"></span><button type="button" id="distNext">›</button></div>
-   <div class="filters"><input type="month" id="distMonth" aria-label="เลือกเดือน"></div>
-  </div>
-  <div class="label">กำไรสุทธิที่นำมาแบ่ง</div><div class="profit-amount" id="distProfit">฿0.00</div>
+  <div class="section-head"><div><h2>แบ่งกำไร</h2><p>คำนวณจากรายการที่ยังไม่เคยนำมาตัดยอด คุณสามารถกดตัดยอดได้ทุกวันที่ต้องการ</p></div><span class="status pending" id="distributionStatus">รอตัดยอด</span></div>
+  <div class="label" style="margin-top:18px">กำไรสุทธิที่ยังไม่เคยตัดยอด</div><div class="profit-amount" id="distProfit">฿0</div>
   <div class="profit-details">
-   <div class="profit-detail"><small>รายรับจากการขาย</small><b id="distRevenue">฿0.00</b></div>
-   <div class="profit-detail"><small>ค่าใช้จ่ายดำเนินงาน</small><b id="distOperating">฿0.00</b></div>
-   <div class="profit-detail"><small>ต้นทุนสินค้าที่ขาย</small><b id="distCogs">฿0.00</b></div>
+   <div class="profit-detail"><small>รายรับจากการขาย</small><b id="distRevenue">฿0</b></div>
+   <div class="profit-detail"><small>ค่าใช้จ่ายดำเนินงาน</small><b id="distOperating">฿0</b></div>
+   <div class="profit-detail"><small>ต้นทุนสินค้าที่ขาย</small><b id="distCogs">฿0</b></div>
   </div>
   <div class="split-grid">
-   <div class="split-box"><div class="pct" style="color:#b47764">30% · ถอนออก</div><div class="money" id="distWithdraw">฿0.00</div><small class="hint">เงินที่นำออกจากธุรกิจ</small></div>
-   <div class="split-box"><div class="pct" style="color:#71836b">70% · ทุนสะสม</div><div class="money" id="distRetained">฿0.00</div><small class="hint">กำไรที่คงอยู่ในธุรกิจ</small></div>
+   <div class="split-box"><div class="pct" style="color:#b47764">30% · ถอนออก</div><div class="money" id="distWithdraw">฿0</div><small class="hint">หักจากเงินโอนก่อน แล้วจึงหักเงินสด</small></div>
+   <div class="split-box"><div class="pct" style="color:#71836b">70% · ทุนสะสม</div><div class="money" id="distRetained">฿0</div><small class="hint">กำไรที่คงอยู่ในธุรกิจ</small></div>
   </div>
   <div class="split-bar"><div class="withdraw"></div><div class="retained"></div></div>
-  <div class="hint">การตัดยอด 30% จะบันทึกเป็นรายการถอนเงินและหักจากเงินคงเหลือ ส่วน 70% ไม่ใช่เงินเข้าใหม่ แต่เป็นส่วนกำไรที่คงอยู่ในธุรกิจ</div>
+  <div class="profit-details">
+   <div class="profit-detail"><small>เงินโอนที่ต้องหัก</small><b id="distTransferDeduction">฿0</b></div>
+   <div class="profit-detail"><small>เงินสดที่ต้องหัก</small><b id="distCashDeduction">฿0</b></div>
+   <div class="profit-detail"><small>ยอดเงินคงเหลือหลังตัด</small><b id="distBalanceAfter">฿0</b></div>
+  </div>
+  <div class="hint" style="margin-top:10px">ระบบจะปัดยอดแบ่งกำไรลงเป็นจำนวนเต็มบาท ส่วนที่เหลือจากการปัดลงจะคงอยู่ในธุรกิจ และหักเงินถอน 30% จากเงินโอนก่อน หากเงินโอนไม่พอจะหักส่วนที่เหลือจากเงินสด</div>
   <div class="toolbar" style="justify-content:flex-end;margin-bottom:0">
-   <button class="btn" id="cutProfitButton" onclick="cutMonthlyProfit()">ตัดยอดกำไรประจำเดือน</button>
+   <button class="btn" id="cutProfitButton" onclick="cutProfitNow()">ตัดยอดกำไร</button>
   </div>
  </div>
  <div class="card panel">
-  <div class="section-head"><div><h2>ประวัติการแบ่งกำไร</h2><p>ตรวจสอบยอดถอนและทุนสะสมของแต่ละเดือน</p></div></div>
+  <div class="section-head"><div><h2>ประวัติการแบ่งกำไร</h2><p>แสดงวันและเวลาที่กดตัดยอด พร้อมรายละเอียดการหักเงิน</p></div></div>
   <div class="profit-details" style="margin-bottom:14px">
-   <div class="profit-detail"><small>ถอนกำไรสะสม</small><b id="totalWithdrawn">฿0.00</b></div>
-   <div class="profit-detail"><small>ทุนสะสมจากส่วนแบ่ง 70%</small><b id="totalRetained">฿0.00</b></div>
-   <div class="profit-detail"><small>กำไรที่รอตัดยอด</small><b id="totalPending">฿0.00</b></div>
+   <div class="profit-detail"><small>ถอนกำไรสะสม</small><b id="totalWithdrawn">฿0</b></div>
+   <div class="profit-detail"><small>ทุนสะสมจากส่วนแบ่ง 70%</small><b id="totalRetained">฿0</b></div>
+   <div class="profit-detail"><small>กำไรที่รอตัดยอด</small><b id="totalPending">฿0</b></div>
   </div>
-  <div class="table-wrap"><table class="data-table"><thead><tr><th>เดือน</th><th>กำไรสุทธิ</th><th>ถอน 30%</th><th>เก็บ 70%</th><th>วันที่ตัดยอด</th><th>สถานะ</th></tr></thead><tbody id="distributionRows"></tbody></table></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>วันที่ / เวลาที่ตัดยอด</th><th>กำไรสุทธิ</th><th>ถอน 30%</th><th>เก็บ 70%</th><th>หักจากเงินโอน</th><th>หักจากเงินสด</th></tr></thead><tbody id="distributionRows"></tbody></table></div>
  </div>
 </section>
 
@@ -195,8 +196,10 @@ async function initializeStorage(){
    if(Array.isArray(stored.expenseCategories))expenseCategories=stored.expenseCategories;
    if(stored.accountBalanceAdjustment!==undefined)accountBalanceAdjustment=Number(stored.accountBalanceAdjustment)||0;
    if(Array.isArray(stored.distributions))distributions=stored.distributions;
+   const migratedCuts=migrateLegacyDistributions();
    accountBalanceCash=stored.accountBalanceCash==null?ledgerBalance():Math.max(0,Number(stored.accountBalanceCash)||0);
    accountBalanceTransfer=stored.accountBalanceTransfer==null?0:Math.max(0,Number(stored.accountBalanceTransfer)||0);
+   if(migratedCuts)await idbPut('state',JSON.parse(JSON.stringify(currentState())));
   }else{accountBalanceCash=ledgerBalance();accountBalanceTransfer=0;await idbPut('state',JSON.parse(JSON.stringify(currentState())));}
   render();
  }catch(err){console.error('Atelier Manager storage initialization failed',err);alert('เปิดฐานข้อมูลในเครื่องไม่สำเร็จ ข้อมูลเดิมในเบราว์เซอร์ยังไม่ได้ถูกลบ กรุณาใช้เบราว์เซอร์เวอร์ชันล่าสุดและลองเปิดใหม่');render()}
@@ -225,11 +228,37 @@ function costOfGoodsSold(list){
 }
 function operatingExpenses(list){return sum(list.filter(x=>x.type==='expense'&&x.category!=='สินค้า'))}
 function netProfit(list){return sum(list,'income')-operatingExpenses(list)-costOfGoodsSold(list)}
-function monthKey(date){return String(date||'').slice(0,7)}
-function monthProfitData(month){
- const list=entries.filter(x=>monthKey(x.date)===month);
+function processedEntryIds(){
+ const ids=new Set();
+ distributions.forEach(d=>(Array.isArray(d.entryIds)?d.entryIds:[]).forEach(id=>ids.add(String(id))));
+ return ids;
+}
+function pendingProfitData(){
+ const processed=processedEntryIds();
+ const list=entries.filter(x=>!processed.has(String(x.id)));
  const revenue=sum(list,'income'),operating=operatingExpenses(list),cogs=costOfGoodsSold(list);
  return {list,revenue,operating,cogs,profit:revenue-operating-cogs};
+}
+function migrateLegacyDistributions(){
+ let changed=false;
+ distributions.forEach(d=>{
+  if(!Array.isArray(d.entryIds)){
+   // Older monthly cuts did not store entry IDs. Treat all records in that month
+   // as already included, so importing this upgrade cannot count them twice.
+   d.entryIds=entries.filter(x=>String(x.date||'').slice(0,7)===d.month).map(x=>String(x.id));
+   d.legacy=true;
+   changed=true;
+  }
+  if(d.cashDeduction==null)d.cashDeduction=0;
+  if(d.transferDeduction==null)d.transferDeduction=0;
+ });
+ return changed;
+}
+function formatCutDate(value){
+ if(!value)return '-';
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return '-';
+ return new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);
 }
 function inPeriod(date,r,c){let d=new Date(date+'T12:00:00');if(r==='day')return iso(d)===iso(c);if(r==='month')return d.getFullYear()===c.getFullYear()&&d.getMonth()===c.getMonth();return d.getFullYear()===c.getFullYear()}
 function periodData(){return entries.filter(x=>inPeriod(x.date,range,cursor))}
@@ -319,49 +348,75 @@ function formatMonthLabel(month){
  return new Intl.DateTimeFormat('th-TH',{month:'long',year:'numeric'}).format(new Date(y,m-1,1));
 }
 function renderDistribution(){
- const month=$('distMonth');if(!month)return;
- if(!month.value)month.value=iso(today).slice(0,7);
- const key=month.value, data=monthProfitData(key),done=distributions.find(d=>d.month===key);
- $('distMonthLabel').textContent=formatMonthLabel(key);
- $('distProfit').textContent=fmt(data.profit);
+ const data=pendingProfitData();
+ const wholeProfit=Math.max(0,Math.floor(data.profit));
+ const withdrawal=Math.floor(wholeProfit*.30);
+ const retained=Math.floor(wholeProfit*.70);
+ const roundingRemainder=wholeProfit-withdrawal-retained;
+ const transfer=Number(accountBalanceTransfer)||0;
+ const cash=Number(accountBalanceCash)||0;
+ const transferDeduction=Math.min(transfer,withdrawal);
+ const cashDeduction=Math.max(0,withdrawal-transferDeduction);
+ $('distProfit').textContent=fmt(Math.max(0,data.profit));
  $('distRevenue').textContent=fmt(data.revenue);
  $('distOperating').textContent=fmt(data.operating);
  $('distCogs').textContent=fmt(data.cogs);
- const withdrawal=done?Number(done.withdrawal):Math.max(0,Math.round(data.profit*.30*100)/100);
- const retained=done?Number(done.retained):Math.max(0,Math.round((data.profit-withdrawal)*100)/100);
  $('distWithdraw').textContent=fmt(withdrawal);
  $('distRetained').textContent=fmt(retained);
- $('distributionStatus').textContent=done?'ตัดยอดแล้ว':'รอตัดยอด';
- $('distributionStatus').className='status '+(done?'done':'pending');
- const btn=$('cutProfitButton');btn.disabled=!!done||data.profit<=0;
- btn.textContent=done?'ตัดยอดเรียบร้อยแล้ว':data.profit<=0?'ยังไม่มีกำไรสำหรับแบ่ง':'ตัดยอดกำไรประจำเดือน';
+ $('distTransferDeduction').textContent=fmt(transferDeduction);
+ $('distCashDeduction').textContent=fmt(cashDeduction);
+ $('distBalanceAfter').textContent=fmt(Math.max(0,cash+transfer-withdrawal));
+ const hasPending=data.list.length>0&&data.profit>0;
+ $('distributionStatus').textContent=hasPending?'มีกำไรรอตัดยอด':'ยังไม่มีกำไรรอตัดยอด';
+ $('distributionStatus').className='status '+(hasPending?'pending':'done');
+ const btn=$('cutProfitButton');
+ btn.disabled=!hasPending||wholeProfit<=0;
+ btn.textContent='ตัดยอดกำไร';
  $('totalWithdrawn').textContent=fmt(distributions.reduce((n,d)=>n+Number(d.withdrawal||0),0));
  $('totalRetained').textContent=fmt(distributions.reduce((n,d)=>n+Number(d.retained||0),0));
- const pending=entries.map(x=>monthKey(x.date)).filter((v,i,a)=>v&&!distributions.some(d=>d.month===v)&&a.indexOf(v)===i)
-  .reduce((n,m)=>n+Math.max(0,monthProfitData(m).profit),0);
- $('totalPending').textContent=fmt(pending);
- const rows=distributions.slice().sort((a,b)=>b.month.localeCompare(a.month));
- $('distributionRows').innerHTML=rows.map(d=>`<tr><td>${esc(formatMonthLabel(d.month))}</td><td><b>${fmt(d.profit)}</b></td><td class="red"><b>${fmt(d.withdrawal)}</b></td><td class="green"><b>${fmt(d.retained)}</b></td><td>${d.cutAt?thdate(d.cutAt.slice(0,10)):'-'}</td><td><span class="status done">ตัดยอดแล้ว</span></td></tr>`).join('')||'<tr><td colspan="6" class="empty">ยังไม่มีประวัติการแบ่งกำไร</td></tr>';
+ $('totalPending').textContent=fmt(Math.max(0,data.profit));
+ const rows=distributions.slice().sort((a,b)=>new Date(b.cutAt||0)-new Date(a.cutAt||0));
+ $('distributionRows').innerHTML=rows.map(d=>`<tr><td>${formatCutDate(d.cutAt)}</td><td><b>${fmt(d.profit)}</b></td><td class="red"><b>${fmt(d.withdrawal)}</b></td><td class="green"><b>${fmt(d.retained)}</b></td><td>${fmt(d.transferDeduction||0)}</td><td>${fmt(d.cashDeduction||0)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">ยังไม่มีประวัติการแบ่งกำไร</td></tr>';
 }
-function cutMonthlyProfit(){
- const month=$('distMonth').value;
- if(!month){alert('กรุณาเลือกเดือน');return}
- if(distributions.some(d=>d.month===month)){alert('เดือนนี้ตัดยอดไปแล้ว ไม่สามารถตัดซ้ำได้');return}
- const data=monthProfitData(month);
- if(!(data.profit>0)){alert('เดือนนี้ไม่มีกำไรสุทธิเป็นบวก จึงยังแบ่งกำไรไม่ได้');return}
- const withdrawal=Math.round(data.profit*.30*100)/100;
- const retained=Math.round((data.profit-withdrawal)*100)/100;
- const message=`ยืนยันตัดยอดกำไร ${formatMonthLabel(month)}?\\n\\nกำไรสุทธิ: ${fmt(data.profit)}\\nถอนออก 30%: ${fmt(withdrawal)}\\nเก็บเป็นทุน 70%: ${fmt(retained)}\\n\\nยอดถอนจะถูกหักจากเงินคงเหลือในธุรกิจ`;
+async function cutProfitNow(){
+ const data=pendingProfitData();
+ const wholeProfit=Math.max(0,Math.floor(data.profit));
+ if(!data.list.length||!(data.profit>0)||wholeProfit<=0){alert('ยังไม่มีกำไรสุทธิที่รอตัดยอด');return}
+ const withdrawal=Math.floor(wholeProfit*.30);
+ const retained=Math.floor(wholeProfit*.70);
+ const roundingRemainder=wholeProfit-withdrawal-retained;
+ const transferBefore=Math.max(0,Number(accountBalanceTransfer)||0);
+ const cashBefore=Math.max(0,Number(accountBalanceCash)||0);
+ const transferDeduction=Math.min(transferBefore,withdrawal);
+ const cashDeduction=withdrawal-transferDeduction;
+ if(cashBefore+transferBefore<withdrawal){
+  alert('ยอดเงินสดและเงินโอนรวมกันไม่เพียงพอสำหรับถอนกำไร 30%\\n\\nยอดที่ต้องถอน: '+fmt(withdrawal)+'\\nเงินโอนที่มี: '+fmt(transferBefore)+'\\nเงินสดที่มี: '+fmt(cashBefore)+'\\n\\nกรุณาปรับยอดเงินในบัญชีให้ตรงก่อนตัดยอด');
+  return;
+ }
+ const totalAfter=cashBefore+transferBefore-withdrawal;
+ const message=`ยืนยันตัดยอดกำไร ณ วันที่ ${formatCutDate(new Date().toISOString())}?\\n\\nกำไรสุทธิที่รอตัดยอด: ${fmt(data.profit)}\\nถอนออก 30%: ${fmt(withdrawal)}\\nเก็บเป็นทุน 70%: ${fmt(retained)}\\n\\nหักจากเงินโอน: ${fmt(transferDeduction)}\\nหักจากเงินสด: ${fmt(cashDeduction)}\\nยอดเงินคงเหลือหลังตัด: ${fmt(totalAfter)}\\n\\nรายการที่นำมาคำนวณจะถูกทำเครื่องหมายว่าตัดยอดแล้ว และจะไม่ถูกนำมาคำนวณซ้ำ`;
  if(!confirm(message))return;
- distributions.push({id:'dist_'+month,month,profit:data.profit,revenue:data.revenue,operating:data.operating,cogs:data.cogs,withdrawal,retained,cutAt:new Date().toISOString()});
- save();render();
- alert('บันทึกการตัดยอดกำไรเรียบร้อยแล้ว');
+ const previousCash=accountBalanceCash,previousTransfer=accountBalanceTransfer;
+ const previousDistributions=JSON.parse(JSON.stringify(distributions));
+ const cutAt=new Date().toISOString();
+ const entryIds=data.list.map(x=>String(x.id));
+ accountBalanceTransfer=Math.max(0,transferBefore-transferDeduction);
+ accountBalanceCash=Math.max(0,cashBefore-cashDeduction);
+ distributions.push({
+  id:'dist_'+Date.now(),profit:data.profit,wholeProfit, revenue:data.revenue,operating:data.operating,cogs:data.cogs,
+  withdrawal,retained,roundingRemainder,transferDeduction,cashDeduction,
+  entryIds,cutAt
+ });
+ const btn=$('cutProfitButton');btn.disabled=true;
+ try{
+  await save();
+  render();
+  alert('ตัดยอดกำไรเรียบร้อยแล้ว\\n\\nถอนออก: '+fmt(withdrawal)+'\\nหักเงินโอน: '+fmt(transferDeduction)+'\\nหักเงินสด: '+fmt(cashDeduction)+'\\nยอดเงินคงเหลือ: '+fmt(accountBalanceCash+accountBalanceTransfer));
+ }catch(err){
+  accountBalanceCash=previousCash;accountBalanceTransfer=previousTransfer;distributions=previousDistributions;
+  render();
+ }
 }
-function shiftDistributionMonth(n){
- const el=$('distMonth'),[y,m]=el.value.split('-').map(Number),d=new Date(y,m-1+n,1);
- el.value=d.getFullYear()+'-'+pad(d.getMonth()+1);renderDistribution();
-}
-
 // Close and clean up the shared entry modal (income, expense, and stock).
 function closeModal(){
  const modal=$('modal');
@@ -659,10 +714,6 @@ for(let t of ['income','expense']){
  sel.onchange=()=>renderTables(t)
 }
 function tick(){let d=new Date();$('today').textContent=new Intl.DateTimeFormat('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(d);$('clock').textContent=new Intl.DateTimeFormat('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}tick();setInterval(tick,30000);if(localStorage.getItem('atelier_dark')==='true')document.body.classList.add('dark');
-$('distMonth').value=iso(today).slice(0,7);
-$('distMonth').onchange=renderDistribution;
-$('distPrev').onclick=()=>shiftDistributionMonth(-1);
-$('distNext').onclick=()=>shiftDistributionMonth(1);
 initializeStorage();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err));
 </script></body></html>
